@@ -10,6 +10,7 @@ The French Learning Feedback Engine is a Flask-based application designed to hel
 - Web interface for easy interaction.
 - Audio support for transcribing WAV files.
 - Explainability via an error table in the UI, showing errors, suggested corrections, and explanations.
+- Recruiter mode to demonstrate AI-driven grammar and accent correction for evaluation purposes. 
 
 ### Files
 - `src/analyze.py`: Processes audio or text input using Whisper for transcription and language_tool_python for grammar checks, generating personalized audio feedback with gTTS.
@@ -95,4 +96,4 @@ The French Learning Feedback Engine is a Flask-based application designed to hel
 - Ensure an internet connection for gTTS to generate audio.
 
 ### License
-This project is licensed under the MIT License. See the LICENSE file for details.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
