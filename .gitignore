@@ -1,12 +1,12 @@
 # Virtual environment
-venv/
+dev/venv/
 
 # Python bytecode and cache
-__pycache__/
-*.pyc
+dev/__pycache__/
+dev/*.pyc
 
 # Temporary audio files
-app/static/correction_*.mp3
+dev/app/static/correction_*.mp3
 
 # macOS system files
 .DS_Store
