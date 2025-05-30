@@ -12,6 +12,14 @@ The French Learning Feedback Engine is a Flask-based application designed to hel
 - Explainability via an error table in the UI, showing errors, suggested corrections, and explanations.
 - Recruiter mode to demonstrate AI-driven grammar and accent correction for evaluation purposes. 
 
+### Screenshots
+#### GUI Screenshots
+![GUI Text 1](screenshots/FrenchLearningFeedbackEngine_Text1.png)
+![GUI Text 2](screenshots/FrenchLearningFeedbackEngine_Text2.png)
+![GUI Text 3](screenshots/FrenchLearningFeedbackEngine_Text3_RecruiterMode.png)
+![GUI Text 4](screenshots/FrenchLearningFeedbackEngine_Audio1.png)
+![GUI Text 5](screenshots/FrenchLearningFeedbackEngine_Audio2.png)
+
 ### Files
 - `src/analyze.py`: Processes audio or text input using Whisper for transcription and language_tool_python for grammar checks, generating personalized audio feedback with gTTS.
 - `app/main.py`: Manages the Flask application, handling routes for the homepage and analysis requests while serving static files like audio feedback.
@@ -36,7 +44,7 @@ This project is a solo effort, so changes are directly committed and pushed fom 
 2. Navigate to the project directory: `cd FrenchLearningFeedbackEngine/dev/`
 3. Create a virtual environment: `python3.10 -m venv venv`
 4. Activate the virtual environment: `source venv/bin/activate` # On Windows: venv\Scripts\activate
-5. (Optional) Upgrade tools: pip install --upgrade pip setuptools wheel 
+5. (Optional) Upgrade tools: pip install `--upgrade pip setuptools wheel` 
 6. Install dependencies: `pip install -r requirements.txt`
    - If requirements.txt is missing, install manually: 
      `pip install flask==3.0.3 language-tool-python==2.9.3 torch>=2.4.0 transformers==4.44.2
@@ -50,12 +58,12 @@ This project is a solo effort, so changes are directly committed and pushed fom 
    - If new:
      - `python3.10 -m venv venv`
      - `source venv/bin/activate` # On Windows: venv\Scripts\activate
-3. (Optional) Upgrade tools: pip install --upgrade pip setuptools wheel 
+3. (Optional) Upgrade tools: pip install `--upgrade pip setuptools wheel` 
 4. Install dependencies (if not already): `pip install -r requirements.txt` 
    - If requirements.txt is missing, use the manual install command above.
 5. Proceed to "Run the App" below.
 
-### Run the App (Both Options):
+#### Run the App (Both Options):
 1. `python3 -m app.main` 
    - Open your browser and navigate to http://127.0.0.1:5001.
    - Stop the app with Ctrl+C when done.
@@ -69,6 +77,8 @@ This project is a solo effort, so changes are directly committed and pushed fom 
 - Je vais à le marché.
 - Je suis aller chez mon mère.
 - Elle mange un pomme. 
+- `test.wav`: "Je suis aller a école."
+- `test2.wav`: "Nous sommes fatigues après la école."
 
 ### Project Structure
 - FrenchLearningFeedbackEngine/
@@ -85,6 +95,7 @@ This project is a solo effort, so changes are directly committed and pushed fom 
     - README.md
     - requirements.txt
     - test.wav
+    - test2.wav
   - .git/ (Git repository files)
   - .gitignore
 
@@ -103,7 +114,7 @@ This project is a solo effort, so changes are directly committed and pushed fom 
   - plotly==5.24.0
 
 ### Additional Notes
-- The app runs on port 5001 to avoid common port conflicts and ensure faster startup. Access it at http://127.0.0.1:5001 after starting the server. If you encounter issues, $
+- The app runs on port 5001 to avoid common port conflicts and ensure faster startup. Access it at http://127.0.0.1:5001 after starting the server. If you encounter issues, check for port conflicts with lsof -i :5001 or run on a different port by modifying app/main.py (e.g., change port=5001 to port=5002 and access http://127.0.0.1:5002).
 - The `app/uploads/` directory is created automatically to store temporary uploaded files and does not need to be versioned.
 
 ### License
