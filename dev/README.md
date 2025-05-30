@@ -102,7 +102,7 @@ This project is a solo effort, so changes are directly committed and pushed fom 
   - numpy==1.26.4
   - plotly==5.24.0
 
-### Notes
+### Additional Notes
 - The app runs on port 5001 to avoid common port conflicts and ensure faster startup. Access it at http://127.0.0.1:5001 after starting the server. If you encounter issues, $
 - The `app/uploads/` directory is created automatically to store temporary uploaded files and does not need to be versioned.
 
