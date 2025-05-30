@@ -16,10 +16,19 @@ The French Learning Feedback Engine is a Flask-based application designed to hel
 - `src/analyze.py`: Processes audio or text input using Whisper for transcription and language_tool_python for grammar checks, generating personalized audio feedback with gTTS.
 - `app/main.py`: Manages the Flask application, handling routes for the homepage and analysis requests while serving static files like audio feedback.
 - `app/templates/index.html`: Provides the user interface with input fields for text or audio, buttons to trigger analysis, and a section to display feedback results.
+- `tests/test_language_tool.py`: Contains unit tests for grammar-checking functionality (using language_tool_python).
 - `requirements.txt`: Lists dependencies required to run scripts.
 - `test.wav`: A sample audio file containing example input.
 
+### Development Workflow
+This project is a solo effort, so changes are directly committed and pushed fom the `dev` directory to GitHub for simplicity. 
+
 ### Setup and Usage
+
+#### Prerequisites
+- Python 3.10 (required for compatibility with specific library versions).
+- An internet connection (for gTTS to generate audio).
+
 #### Option 1: From GitHub (Clone)
 - **NOTE**
   - Start in your preferred directory (e.g., cd ~/Desktop/ or cd ~/Documents/). 
@@ -48,8 +57,10 @@ The French Learning Feedback Engine is a Flask-based application designed to hel
 
 ### Run the App (Both Options):
 1. `python3 -m app.main` 
-   - Access it at http://127.0.0.1:5000.
+   - Open your browser and navigate to http://127.0.0.1:5001.
    - Stop the app with Ctrl+C when done.
+**Note:** The app runs on port 5001 to avoid common port conflicts and ensure faster startup. Access it at http://127.0.0.1:5001 after starting the server. If you encounter issues, check for port conflicts with lsof -i :5001 or run on a different port by modifying app/main.py (e.g., change port=5001 to port=5002 and access http://127.0.0.1:5002). 
+
 2. Use the interface:
    - Enter text (or select from the dropdown) and click "Analyze Text".
    - Upload a .wav file (click "Choose File", select the file, click "Open", then "Analyze Speech").
@@ -69,12 +80,15 @@ The French Learning Feedback Engine is a Flask-based application designed to hel
       - templates/index.html
     - src/
       - __init__.py
-      - analyze.py 
+      - analyze.py
+    - tests/
+      - test_language_tool.py 
     - venv/ (Virtual environment, created during setup)
     - README.md
     - requirements.txt
     - test.wav
   - .git/ (Git repository files)
+  - .gitignore
 
 ### Dependencies
 - Listed in requirements.txt:
