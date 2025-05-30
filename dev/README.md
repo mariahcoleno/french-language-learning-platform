@@ -59,8 +59,9 @@ This project is a solo effort, so changes are directly committed and pushed fom 
 1. `python3 -m app.main` 
    - Open your browser and navigate to http://127.0.0.1:5001.
    - Stop the app with Ctrl+C when done.
-**Note:** The app runs on port 5001 to avoid common port conflicts and ensure faster startup. Access it at http://127.0.0.1:5001 after starting the server. If you encounter issues, check for port conflicts with lsof -i :5001 or run on a different port by modifying app/main.py (e.g., change port=5001 to port=5002 and access http://127.0.0.1:5002). 
-
+**Note:** 
+   - The app runs on port 5001 to avoid common port conflicts and ensure faster startup. Access it at http://127.0.0.1:5001 after starting the server. If you encounter issues, check for port conflicts with lsof -i :5001 or run on a different port by modifying app/main.py (e.g., change port=5001 to port=5002 and access http://127.0.0.1:5002). 
+   - The `app/uploads/` directory is created automatically to store temporary uploaded files and does not need to be versioned.
 2. Use the interface:
    - Enter text (or select from the dropdown) and click "Analyze Text".
    - Upload a .wav file (click "Choose File", select the file, click "Open", then "Analyze Speech").
