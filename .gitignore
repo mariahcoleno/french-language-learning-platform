@@ -4,6 +4,10 @@ dev/venv/
 # Python bytecode and cache
 dev/__pycache__/
 dev/*.pyc
+dev/app/__pycache__/
+dev/src/__pycache__/
+dev/tests/__pycache__/
+dev/tests/*.pyc
 
 # Temporary audio files
 dev/app/static/correction_*.mp3
@@ -14,5 +18,4 @@ dev/app/static/correction_*.mp3
 # Other temporary files
 *.log
 *.tmp
-dev/tests/__pycache__/
-dev/tests/*.pyc
+
