@@ -26,11 +26,11 @@ This project is a solo effort, so changes are directly committed and pushed fom 
 ### Setup and Usage
 
 #### Prerequisites
-- Python 3.10 (required for compatibility with specific library versions).
-- An internet connection (for gTTS to generate audio).
+- Python 3.10 (required for compatibility with specific library versions, e.g., Whisper, as some libraries may have issues with the system default Python 3.13). Check your version with: `python3 --version`.
+- An internet connection (required for gTTS to generate audio).
 
 #### Option 1: From GitHub (Clone)
-- **NOTE**
+- **Note**
   - Start in your preferred directory (e.g., cd ~/Desktop/ or cd ~/Documents/). 
 1. Clone the repository: `git clone https://github.com/mariahcoleno/FrenchLearningFeedbackEngine.git`
 2. Navigate to the project directory: `cd FrenchLearningFeedbackEngine/dev/`
@@ -59,9 +59,6 @@ This project is a solo effort, so changes are directly committed and pushed fom 
 1. `python3 -m app.main` 
    - Open your browser and navigate to http://127.0.0.1:5001.
    - Stop the app with Ctrl+C when done.
-**Note:** 
-   - The app runs on port 5001 to avoid common port conflicts and ensure faster startup. Access it at http://127.0.0.1:5001 after starting the server. If you encounter issues, check for port conflicts with lsof -i :5001 or run on a different port by modifying app/main.py (e.g., change port=5001 to port=5002 and access http://127.0.0.1:5002). 
-   - The `app/uploads/` directory is created automatically to store temporary uploaded files and does not need to be versioned.
 2. Use the interface:
    - Enter text (or select from the dropdown) and click "Analyze Text".
    - Upload a .wav file (click "Choose File", select the file, click "Open", then "Analyze Speech").
@@ -106,9 +103,8 @@ This project is a solo effort, so changes are directly committed and pushed fom 
   - plotly==5.24.0
 
 ### Notes
-- The virtual environment uses Python 3.10 for compatibility with specific library versions (e.g., Whisper) as some libraries may have issues with the system default (3.13). 
-  - Check your Python version with: `python3 --version`
-- Ensure an internet connection for gTTS to generate audio.
+- The app runs on port 5001 to avoid common port conflicts and ensure faster startup. Access it at http://127.0.0.1:5001 after starting the server. If you encounter issues, $
+- The `app/uploads/` directory is created automatically to store temporary uploaded files and does not need to be versioned.
 
 ### License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
