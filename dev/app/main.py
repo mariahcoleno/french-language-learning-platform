@@ -59,6 +59,5 @@ def serve_static(filename):
         return send_from_directory(app.static_folder, filename)
     return "File not found", 404
 
-if __name__ == '__main__':
-    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-    app.run(debug=True)
+if __name__ == "__main__":
+    app.run(debug=True, host="0.0.0.0", port=5001)
