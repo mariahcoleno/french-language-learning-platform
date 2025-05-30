@@ -19,3 +19,5 @@ dev/app/static/correction_*.mp3
 *.log
 *.tmp
 
+# Other files
+dev/app/uploads/
