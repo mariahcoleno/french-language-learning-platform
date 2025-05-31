@@ -18,38 +18,61 @@ PRELOADED_SENTENCES = [
 def index():
     return render_template('index.html', sentences=PRELOADED_SENTENCES)
 
-@app.route('/analyze', methods=['POST'])
-def analyze():
+@app.route('/analyze_audio', methods=['POST'])
+def analyze_audio():
     recruiter_mode = request.form.get('recruiter_mode') == 'true'
-    if 'audio' in request.files:
-        audio = request.files['audio']
-        if audio.filename == '':
-            return jsonify({"error": "No audio file provided"}), 400
-        filename = os.path.join(app.config['UPLOAD_FOLDER'], 'input.wav')
-        os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-        audio.save(filename)
-        result = analyzer.analyze_speech(filename)
-    else:
-        text = request.form.get('text', '')
-        if not text:
-            return jsonify({"error": "No text provided"}), 400
-        result = {
-            "transcription": text,
-            "errors": analyzer.analyze_text(text),
-            "accent": "N/A",
-            "shap_values": None,
-            "audio_path": None,
-            "pronunciation_corrections": []
-        }
-
-    return jsonify({
+    gender = request.form.get('gender', 'masculine')
+    if 'audio' not in request.files:
+        return jsonify({"error": "No audio file provided"}), 400
+    audio = request.files['audio']
+    if audio.filename == '':
+        return jsonify({"error": "No audio file provided"}), 400
+    filename = os.path.join(app.config['UPLOAD_FOLDER'], 'input.wav')
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+    audio.save(filename)
+    result = analyzer.analyze_speech(filename, gender=gender)
+    response = {
         "transcription": result["transcription"],
         "errors": result["errors"],
+        "corrected_text": result["corrected_text"],
         "accent": result["accent"],
         "audio": result.get("audio_path"),
         "pronunciation_corrections": result.get("pronunciation_corrections", []),
         "recruiter_mode": recruiter_mode
-    })
+    }
+    if recruiter_mode:
+        response["popup"] = "This app provides grammar, accent, and pronunciation correction to help you improve your French."
+    return jsonify(response)
+
+@app.route('/analyze_text', methods=['POST'])
+def analyze_text():
+    recruiter_mode = request.form.get('recruiter_mode') == 'true'
+    gender = request.form.get('gender', 'masculine')
+    text = request.form.get('text', '')
+    if not text:
+        return jsonify({"error": "No text provided"}), 400
+    errors, corrected_text = analyzer.analyze_text(text, gender=gender)
+    result = {
+        "transcription": text,
+        "errors": errors,
+        "corrected_text": corrected_text,
+        "accent": "N/A",
+        "shap_values": None,
+        "audio_path": None,
+        "pronunciation_corrections": []
+    }
+    response = {
+        "transcription": result["transcription"],
+        "errors": result["errors"],
+        "corrected_text": result["corrected_text"],
+        "accent": result["accent"],
+        "audio": result.get("audio_path"),
+        "pronunciation_corrections": result.get("pronunciation_corrections", []),
+        "recruiter_mode": recruiter_mode
+    }
+    if recruiter_mode:
+        response["popup"] = "This app provides grammar, accent, and pronunciation correction to help you improve your French."
+    return jsonify(response)
 
 @app.route('/static/<path:filename>')
 def serve_static(filename):

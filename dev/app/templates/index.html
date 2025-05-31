@@ -15,10 +15,12 @@
     async function analyzeText() {
       const text = document.getElementById('inputText').value;
       const recruiterMode = document.getElementById('recruiterMode').checked;
+      const gender = document.getElementById('textGender').value;
       const formData = new FormData();
       formData.append('text', text);
       formData.append('recruiter_mode', recruiterMode);
-      const response = await fetch('/analyze', {
+      formData.append('gender', gender);
+      const response = await fetch('/analyze_text', {
         method: 'POST',
         body: formData
       });
@@ -29,10 +31,12 @@
     async function analyzeSpeech() {
       const audioInput = document.getElementById('audioInput').files[0];
       const recruiterMode = document.getElementById('recruiterMode').checked;
+      const gender = document.getElementById('audioGender').value;
       const formData = new FormData();
       formData.append('audio', audioInput);
       formData.append('recruiter_mode', recruiterMode);
-      const response = await fetch('/analyze', {
+      formData.append('gender', gender);
+      const response = await fetch('/analyze_audio', {
         method: 'POST',
         body: formData
       });
@@ -44,6 +48,10 @@
       const feedbackDiv = document.getElementById('feedback');
       let html = `<p><strong>Transcription:</strong> ${result.transcription}</p>`;
       
+      if (result.corrected_text) {
+        html += `<p><strong>Corrected Sentence:</strong> <span class="correct">${result.corrected_text}</span></p>`;
+      }
+
       if (result.pronunciation_corrections && result.pronunciation_corrections.length > 0) {
         html += '<p><strong>Pronunciation Corrections:</strong></p><ul>';
         result.pronunciation_corrections.forEach(c => {
@@ -53,6 +61,7 @@
       }
 
       if (result.errors.length > 0) {
+        html += '<p><strong>Grammar Corrections:</strong></p>';
         html += '<table><tr><th>Error</th><th>Suggestions</th><th>Explanation</th></tr>';
         result.errors.forEach(error => {
           html += `<tr><td class="error">${error.error}</td><td class="correct">${error.suggestions.join(', ')}</td><td>${error.message}</td></tr>`;
@@ -71,7 +80,8 @@
       feedbackDiv.innerHTML = html;
 
       if (result.recruiter_mode) {
-        alert("Recruiter Mode: This demo shows AI-driven grammar and accent correction.");
+        const popupMessage = result.popup || "Recruiter Mode: This demo shows AI-driven grammar, accent, and pronunciation correction.";
+        alert(popupMessage);
       }
     }
 
@@ -85,19 +95,36 @@
   <h1>French Learning Feedback Engine</h1>
   <label><input type="checkbox" id="recruiterMode"> Recruiter Mode</label>
   <h3>Enter Text</h3>
-  <textarea id="inputText" rows="4" cols="50"></textarea>
-  <br>
-  <select id="preloadedSentences" onchange="loadPreloadedSentence()">
-    <option value="">Select a sentence</option>
-    {% for sentence in sentences %}
-    <option value="{{ sentence }}">{{ sentence }}</option>
-    {% endfor %}
-  </select>
-  <br>
-  <button onclick="analyzeText()">Analyze Text</button>
+  <form id="textForm">
+    <textarea id="inputText" rows="4" cols="50"></textarea>
+    <br>
+    <select id="preloadedSentences" onchange="loadPreloadedSentence()">
+      <option value="">Select a sentence</option>
+      {% for sentence in sentences %}
+      <option value="{{ sentence }}">{{ sentence }}</option>
+      {% endfor %}
+    </select>
+    <br>
+    <label for="textGender">Select Gender for Grammar Agreement:</label>
+    <select name="gender" id="textGender">
+      <option value="masculine">Masculine</option>
+      <option value="feminine">Feminine</option>
+    </select>
+    <br>
+    <button type="button" onclick="analyzeText()">Analyze Text</button>
+  </form>
   <h3>Upload Audio</h3>
-  <input type="file" id="audioInput" accept="audio/*">
-  <button onclick="analyzeSpeech()">Analyze Speech</button>
+  <form id="audioForm">
+    <input type="file" id="audioInput" accept="audio/*">
+    <br>
+    <label for="audioGender">Select Gender for Grammar Agreement:</label>
+    <select name="gender" id="audioGender">
+      <option value="masculine">Masculine</option>
+      <option value="feminine">Feminine</option>
+    </select>
+    <br>
+    <button type="button" onclick="analyzeSpeech()">Analyze Speech</button>
+  </form>
   <div id="feedback"></div>
 </body>
 </html>

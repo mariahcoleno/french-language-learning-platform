@@ -14,11 +14,12 @@ The French Learning Feedback Engine is a Flask-based application designed to hel
 
 ### Screenshots
 #### GUI Screenshots
-![GUI Text 1](screenshots/FrenchLearningFeedbackEngine_Text1.png)
-![GUI Text 2](screenshots/FrenchLearningFeedbackEngine_Text2.png)
-![GUI Text 3](screenshots/FrenchLearningFeedbackEngine_Text3_RecruiterMode.png)
-![GUI Text 4](screenshots/FrenchLearningFeedbackEngine_Audio1.png)
-![GUI Text 5](screenshots/FrenchLearningFeedbackEngine_Audio2.png)
+![GUI Text 1](screenshots/FrenchLearningFeedbackEngine_RecruiterMode_PopUp.png)
+![GUI Text 2](screenshots/FrenchLearningFeedbackEngine_Text1.png)
+![GUI Text 3](screenshots/FrenchLearningFeedbackEngine_Text2.png)
+![GUI Text 4](screenshots/FrenchLearningFeedbackEngine_Text3.png)
+![GUI Text 5](screenshots/FrenchLearningFeedbackEngine_Audio1.png)
+![GUI Text 6](screenshots/FrenchLearningFeedbackEngine_Audio2.png)
 
 ### Files
 - `src/analyze.py`: Processes audio or text input using Whisper for transcription and language_tool_python for grammar checks, generating personalized audio feedback with gTTS.
