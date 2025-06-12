@@ -1,7 +1,7 @@
 # French Learning Feedback Engine
 
 ### Overview
-The French Learning Feedback Engine is a Flask-based application designed to help French learners improve their pronunciation and grammar. It transcribes spoken French, identifies errors, and provides personalized audio feedback using AI-powered tools like Whisper and gTTS.
+The French Learning Feedback Engine is a Flask-based web application designed to help French learners improve their pronunciation and grammar. It transcribes spoken French, identifies errors, and provides personalized audio feedback using AI-powered tools like Whisper and gTTS.
 
 ### Features
 - Real-time speech transcription with Whisper.
@@ -41,7 +41,7 @@ This project is a solo effort, so changes are directly committed and pushed fom 
 #### Option 1: From GitHub (Clone)
 - **Note**
   - Start in your preferred directory (e.g., cd ~/Desktop/ or cd ~/Documents/). 
-1. Clone the repository: `git clone https://github.com/mariahcoleno/FrenchLearningFeedbackEngine.git`
+1. Clone the repository: `git clone https://github.com/mariahcoleno/french-language-learning-platform.git`
 2. Navigate to the project directory: `cd FrenchLearningFeedbackEngine/dev/`
 3. Create a virtual environment: `python3.10 -m venv venv`
 4. Activate the virtual environment: `source venv/bin/activate` # On Windows: venv\Scripts\activate
@@ -53,7 +53,7 @@ This project is a solo effort, so changes are directly committed and pushed fom 
 7. Proceed to "Run the App" below.
 
 #### Option 2: Local Setup (Existing Repository)
-1. Navigate to your local repository (adjust path as needed): `cd ~/Documents/FrenchLearningFeedbackEngine/dev`
+1. Navigate to your local repository (adjust path as needed): `cd ~/Documents/french-language-learning-platform/dev`
 2. Setup and activate a virtual environment:
    - If existing: `source venv/bin/activate` (adjust path if venv is elsewhere)
    - If new:
