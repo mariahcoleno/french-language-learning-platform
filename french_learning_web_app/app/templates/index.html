@@ -3,55 +3,85 @@
 <head>
   <title>French Learning Feedback Engine</title>
   <style>
+    /* Basic styling for the application */
     body { font-family: Arial; margin: 20px; }
     .error { color: red; }
     .correct { color: green; }
     #feedback { margin-top: 20px; }
+    
+    /* Table styling for grammar corrections display */
     table { width: 100%; border-collapse: collapse; }
     th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
     th { background-color: #f2f2f2; }
   </style>
   <script>
+    /**
+     * Analyzes user-submitted text for French grammar errors
+     * Sends text data to backend and displays corrections
+     */
     async function analyzeText() {
+      // Get user input values
       const text = document.getElementById('inputText').value;
       const recruiterMode = document.getElementById('recruiterMode').checked;
       const gender = document.getElementById('textGender').value;
+      
+      // Prepare form data for POST request
       const formData = new FormData();
       formData.append('text', text);
       formData.append('recruiter_mode', recruiterMode);
       formData.append('gender', gender);
+      
+      // Send request to backend for text analysis
       const response = await fetch('/analyze_text', {
         method: 'POST',
         body: formData
       });
+      
       const result = await response.json();
       displayResult(result);
     }
 
+    /**
+     * Analyzes uploaded audio file for pronunciation and grammar
+     * Handles speech-to-text conversion and feedback generation
+     */
     async function analyzeSpeech() {
+      // Get uploaded audio file and user preferences
       const audioInput = document.getElementById('audioInput').files[0];
       const recruiterMode = document.getElementById('recruiterMode').checked;
       const gender = document.getElementById('audioGender').value;
+      
+      // Prepare form data with audio file
       const formData = new FormData();
       formData.append('audio', audioInput);
       formData.append('recruiter_mode', recruiterMode);
       formData.append('gender', gender);
+      
+      // Send audio to backend for analysis
       const response = await fetch('/analyze_audio', {
         method: 'POST',
         body: formData
       });
+      
       const result = await response.json();
       displayResult(result);
     }
 
+    /**
+     * Displays analysis results in a formatted feedback section
+     * Handles transcription, corrections, pronunciation feedback, and grammar errors
+     * @param {Object} result - Analysis results from backend
+     */
     function displayResult(result) {
       const feedbackDiv = document.getElementById('feedback');
       let html = `<p><strong>Transcription:</strong> ${result.transcription}</p>`;
       
+      // Display corrected text if available
       if (result.corrected_text) {
         html += `<p><strong>Corrected Sentence:</strong> <span class="correct">${result.corrected_text}</span></p>`;
       }
 
+      // Display pronunciation corrections for audio input
       if (result.pronunciation_corrections && result.pronunciation_corrections.length > 0) {
         html += '<p><strong>Pronunciation Corrections:</strong></p><ul>';
         result.pronunciation_corrections.forEach(c => {
@@ -60,6 +90,7 @@
         html += '</ul>';
       }
 
+      // Display grammar errors in a structured table
       if (result.errors.length > 0) {
         html += '<p><strong>Grammar Corrections:</strong></p>';
         html += '<table><tr><th>Error</th><th>Suggestions</th><th>Explanation</th></tr>';
@@ -69,22 +100,29 @@
         html += '</table>';
       }
 
+      // Display detected accent information
       if (result.accent !== 'N/A') {
         html += `<p><strong>Accent:</strong> ${result.accent}</p>`;
       }
 
+      // Embed audio playback if available
       if (result.audio) {
         html += `<audio controls src="${result.audio}"></audio>`;
       }
 
       feedbackDiv.innerHTML = html;
 
+      // Show recruiter mode popup for demonstration purposes
       if (result.recruiter_mode) {
         const popupMessage = result.popup || "Recruiter Mode: This demo shows AI-driven grammar, accent, and pronunciation correction.";
         alert(popupMessage);
       }
     }
 
+    /**
+     * Loads a preselected sentence into the text input field
+     * Helper function for demo purposes and user convenience
+     */
     function loadPreloadedSentence() {
       const select = document.getElementById('preloadedSentences');
       document.getElementById('inputText').value = select.value;
@@ -93,11 +131,17 @@
 </head>
 <body>
   <h1>French Learning Feedback Engine</h1>
+  
+  <!-- Special mode for demonstrating features to recruiters/reviewers -->
   <label><input type="checkbox" id="recruiterMode"> Recruiter Mode</label>
+  
+  <!-- Text Analysis Section -->
   <h3>Enter Text</h3>
   <form id="textForm">
     <textarea id="inputText" rows="4" cols="50"></textarea>
     <br>
+    
+    <!-- Dropdown with sample sentences for easy testing -->
     <select id="preloadedSentences" onchange="loadPreloadedSentence()">
       <option value="">Select a sentence</option>
       {% for sentence in sentences %}
@@ -105,6 +149,8 @@
       {% endfor %}
     </select>
     <br>
+    
+    <!-- Gender selection affects French grammar agreement rules -->
     <label for="textGender">Select Gender for Grammar Agreement:</label>
     <select name="gender" id="textGender">
       <option value="masculine">Masculine</option>
@@ -113,10 +159,14 @@
     <br>
     <button type="button" onclick="analyzeText()">Analyze Text</button>
   </form>
+  
+  <!-- Audio Analysis Section -->
   <h3>Upload Audio</h3>
   <form id="audioForm">
     <input type="file" id="audioInput" accept="audio/*">
     <br>
+    
+    <!-- Gender selection for audio analysis (affects grammar corrections) -->
     <label for="audioGender">Select Gender for Grammar Agreement:</label>
     <select name="gender" id="audioGender">
       <option value="masculine">Masculine</option>
@@ -125,6 +175,8 @@
     <br>
     <button type="button" onclick="analyzeSpeech()">Analyze Speech</button>
   </form>
+  
+  <!-- Results will be dynamically populated here -->
   <div id="feedback"></div>
 </body>
 </html>
