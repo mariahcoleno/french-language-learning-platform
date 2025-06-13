@@ -1,3 +1,9 @@
+"""
+Tests for French grammar checking functionality using LanguageTool.
+Validates detection of common French grammar errors like past participle
+and gender agreement mistakes.
+"""
+
 import unittest
 import language_tool_python
 
@@ -6,6 +12,7 @@ class TestLanguageTool(unittest.TestCase):
         self.tool = language_tool_python.LanguageTool('fr')
 
     def test_grammar_check(self):
+        """Test detection of French grammar errors in sample text."""
         text = "Je suis aller chez mon mère"
         matches = self.tool.check(text)
         
