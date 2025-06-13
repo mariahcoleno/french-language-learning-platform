@@ -1,6 +1,5 @@
 ## French Learning Web App
 This Flask-based web application is designed to help French learners improve their pronunciation, grammar, and accent usage. It transcribes spoken French, identifies errors, and provides personalized audio feedback using AI-powered tools like Whisper and gTTS.
-Features
 
 ### Features
 - Real-time speech transcription with Whisper
