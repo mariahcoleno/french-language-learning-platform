@@ -1,4 +1,4 @@
-# French Language Learning Platform
+## French Language Learning Platform
 This Flask-based web application is designed to help French learners improve their pronunciation and grammar. It transcribes spoken French, identifies errors, and provides personalized audio feedback using AI-powered tools like Whisper and gTTS.
 
 ### Features
@@ -41,7 +41,6 @@ This Flask-based web application is designed to help French learners improve the
 - plotly==5.24.0  
   
 ### Setup and Usage
-
 #### Prerequisites
 - Python 3.10 (required for compatibility with specific library versions, e.g., Whisper, as some libraries may have issues with the system default Python 3.13). Check your version with: `python3 --version`.
 - An internet connection (required for gTTS to generate audio).
@@ -113,3 +112,5 @@ This Flask-based web application is designed to help French learners improve the
 ### License
 All rights reserved. Contact colenomariah92@gmail.com for licensing inquiries.
 
+### Development Notes
+- Application developed through iterative prompt engineering with AI tools (Claude/Grok) for rapid prototyping and learning.
