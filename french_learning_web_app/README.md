@@ -24,10 +24,10 @@ This Flask-based web application is designed to help French learners improve the
 - `app/main.py`: Manages the Flask application, handling routes for the homepage and analysis requests while serving static files like audio feedback.
 - `app/templates/index.html`: Provides the user interface with input fields for text or audio, buttons to trigger analysis, and a section to display feedback results.
 - `tests/test_language_tool.py`: Contains unit tests for grammar-checking functionality (using language_tool_python).
-- `requirements.txt`: Lists all Python dependencies required to run the tool.
+- `requirements.txt`: Lists all Python dependencies required to run the web app.
 - `test.wav`: A sample audio file containing example input.
 
-### Dependencies
+### Requirements
 - flask==3.0.3 
 - language-tool-python==2.9.3
 - torch>=2.4.0
@@ -49,7 +49,7 @@ This Flask-based web application is designed to help French learners improve the
 - **Note**
   - Start in your preferred directory (e.g., cd ~/Desktop/ or cd ~/Documents/). 
 1. Clone the repository: `git clone https://github.com/mariahcoleno/french-language-learning-platform.git`
-2. Navigate to the project directory: `cd dev/`
+2. Navigate to the project directory: `cd french_learning_web_app/`
 3. Create a virtual environment: `python3.10 -m venv venv`
 4. Activate the virtual environment: `source venv/bin/activate` # On Windows: venv\Scripts\activate
 5. (Optional) Upgrade tools: pip install `--upgrade pip setuptools wheel` 
@@ -60,7 +60,7 @@ This Flask-based web application is designed to help French learners improve the
 7. Proceed to "Run the App" below.
 
 #### Option 2: Local Setup (Existing Repository)
-1. Navigate to your local repository (adjust path as needed): `cd ~/Documents/french-language-learning-platform/dev`
+1. Navigate to your local repository (adjust path as needed): `cd ~/Documents/french-language-learning-platform/french_learning_web_app`
 2. Setup and activate a virtual environment:
    - If existing: `source venv/bin/activate` (adjust path if venv is elsewhere)
    - If new:
