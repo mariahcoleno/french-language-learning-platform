@@ -89,23 +89,22 @@ This Flask-based web application is designed to help French learners improve the
 - `test.wav`: "Je suis aller a école."
 - `test2.wav`: "Nous sommes fatigues après la école."
 
-### Structure
+### Project Structure
 - dev/
   - app/
     - main.py
-    - templates/index.html
+    - templates
+      - index.html
+  - screenshots (contains 6 sample images)
   - src/
     - __init__.py
     - analyze.py 
   - tests/
     - test_language_tool.py 
-  - venv/ (Virtual environment, created during setup)
   - README.md
   - requirements.txt
   - test.wav
   - test2.wav
-  - .git/ (Git repository files)
-  - .gitignore
 
 ### Additional Notes
 - The app runs on port 5001 to avoid common port conflicts and ensure faster startup. Access it at http://127.0.0.1:5001 after starting the server. If you encounter issues, check for port conflicts with lsof -i :5001 or run on a different port by modifying app/main.py (e.g., change port=5001 to port=5002 and access http://127.0.0.1:5002).
