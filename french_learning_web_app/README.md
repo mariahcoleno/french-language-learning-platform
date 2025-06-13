@@ -1,4 +1,4 @@
-## French Language Learning Platform
+## French Learning Web App
 This Flask-based web application is designed to help French learners improve their pronunciation and grammar. It transcribes spoken French, identifies errors, and provides personalized audio feedback using AI-powered tools like Whisper and gTTS.
 
 ### Features
@@ -89,21 +89,27 @@ This Flask-based web application is designed to help French learners improve the
 - `test2.wav`: "Nous sommes fatigues après la école."
 
 ### Project Structure
-- dev/
-  - app/
-    - main.py
-    - templates
-      - index.html
-  - screenshots (contains 6 sample images)
-  - src/
-    - __init__.py
-    - analyze.py 
-  - tests/
-    - test_language_tool.py 
-  - README.md
-  - requirements.txt
-  - test.wav
-  - test2.wav
+- french-language-learning-platform/
+  - french_learning_web_app/
+    - app/
+      - static/
+        - audio/ (multiple correction files)
+      - templates
+        - index.html
+      - uploads/
+        - input.wav
+      - main.py
+    - screenshots (multiple sample images)
+    - src/
+      - __init__.py
+      - analyze.py 
+    - tests/
+      - test_language_tool.py 
+    - README.md
+    - requirements.txt
+    - test.wav
+    - test2.wav
+  - .gitignore
 
 ### Additional Notes
 - The app runs on port 5001 to avoid common port conflicts and ensure faster startup. Access it at http://127.0.0.1:5001 after starting the server. If you encounter issues, check for port conflicts with lsof -i :5001 or run on a different port by modifying app/main.py (e.g., change port=5001 to port=5002 and access http://127.0.0.1:5002).
