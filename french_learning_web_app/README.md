@@ -28,6 +28,8 @@ This Flask-based web application is designed to help French learners improve the
 - `test.wav`: A sample audio file containing example input.
 
 ### Requirements
+- Python 3.10 (required for compatibility with specific library versions, e.g., Whisper, as some libraries may have issues with the system default Python 3.13). Check your version with: `python3 --version`.
+- An internet connection (required for gTTS to generate audio).
 - flask==3.0.3 
 - language-tool-python==2.9.3
 - torch>=2.4.0
@@ -41,10 +43,6 @@ This Flask-based web application is designed to help French learners improve the
 - plotly==5.24.0  
   
 ### Setup and Usage
-#### Prerequisites
-- Python 3.10 (required for compatibility with specific library versions, e.g., Whisper, as some libraries may have issues with the system default Python 3.13). Check your version with: `python3 --version`.
-- An internet connection (required for gTTS to generate audio).
-
 #### Option 1: From GitHub (First Time Setup)
 - **Note**
   - Start in your preferred directory (e.g., cd ~/Desktop/ or cd ~/Documents/). 
