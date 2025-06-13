@@ -1,16 +1,18 @@
 # Virtual environment
-dev/venv/
+venv/
+french_learning_web_app/venv/
 
 # Python bytecode and cache
-dev/__pycache__/
-dev/*.pyc
-dev/app/__pycache__/
-dev/src/__pycache__/
-dev/tests/__pycache__/
-dev/tests/*.pyc
+__pycache__/
+*.pyc
+french_learning_web_app/__pycache__/
+french_learning_web_app/app/__pycache__/
+french_learning_web_app/src/__pycache__/
+french_learning_web_app/tests/__pycache__/
+french_learning_web_app/tests/*.pyc
 
 # Temporary audio files
-dev/app/static/correction_*.mp3
+french_learning_web_app/app/static/correction_*.mp3
 
 # macOS system files
 .DS_Store
@@ -19,5 +21,5 @@ dev/app/static/correction_*.mp3
 *.log
 *.tmp
 
-# Other files
-dev/app/uploads/
+# Environment variables
+.env
