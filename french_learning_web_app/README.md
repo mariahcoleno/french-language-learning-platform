@@ -19,12 +19,8 @@ The primary user interface showing both text analysis and audio upload options. 
 
 ![GUI Text 2](screenshots/FrenchLearningFeedbackEngine_Text4.png)
 
-#### Grammar Analysis Results
-Complete analysis interface showing the full workflow from input to correction. The application has processed the French text "Je vais à le marché" and identified the grammatical error "à le" which should be contracted to "au". The results display includes the original transcription, corrected sentence, and an explanatory error table with detailed grammar rules.
-
-![GUI Text 2](screenshots/FrenchLearningFeedbackEngine_Text1.png)
-
 #### Grammar Correction Interface
+The application has processed the French text "Je vais à le marché" and identified the grammatical error "à le" which should be contracted to "au". The results display includes the original transcription, corrected sentence, and an explanatory error table with detailed grammar rules.
 A web-based French language learning application that provides real-time grammar feedback and corrections. The interface shows a text analysis tool where users can input French sentences (showing "Je suis aller chez mon mère" as an example) and receive detailed grammatical corrections. The system identifies errors such as incorrect past participle agreement ("aller" should be "allée") and determiner agreement ("mon mère" should be "ma mère"), providing explanations in French for each correction. The application includes both text input and audio upload functionality, with gender selection options for proper grammar agreement analysis. It features a "Recruiter Mode" and displays corrections in a clear table format showing the original error, suggested correction, and grammatical explanation.*
 
 ![GUI Text 3](screenshots/FrenchLearningFeedbackEngine_Text2.png)
