@@ -14,30 +14,47 @@ This Flask-based web application is designed to help French learners improve the
 
 ### Screenshots
 #### Main Interface
-The main interface of a French language learning application designed to provide grammar, accent, and pronunciation feedback. The clean, web-based interface features two primary input methods: a text entry section with a large text area for typing French sentences, and an a$
-The primary user interface showing both text analysis and audio upload options. Users can enter French text directly or upload audio files for speech-to-text transcription. The interface includes gender selection for accurate grammar agreement corrections and a recruiter mode for demonstration purposes.*
+The main interface of a French language learning application designed to provide grammar, accent, and pronunciation feedback. 
+The clean, web-based interface features two primary input methods: a text entry section with a large text area for typing French sentences, and an audio upload option. 
+Users can enter French text directly or upload audio files for speech-to-text transcription. 
+The interface includes gender selection for accurate grammar agreement corrections and a recruiter mode for demonstration purposes.
 
 ![GUI Text 2](screenshots/FrenchLearningFeedbackEngine_Text4.png)
 
-#### Grammar Correction Interface
-The application has processed the French text "Je vais à le marché" and identified the grammatical error "à le" which should be contracted to "au". The results display includes the original transcription, corrected sentence, and an explanatory error table with detailed grammar rules.
-A web-based French language learning application that provides real-time grammar feedback and corrections. The interface shows a text analysis tool where users can input French sentences (showing "Je suis aller chez mon mère" as an example) and receive detailed grammatical corrections. The system identifies errors such as incorrect past participle agreement ("aller" should be "allée") and determiner agreement ("mon mère" should be "ma mère"), providing explanations in French for each correction. The application includes both text input and audio upload functionality, with gender selection options for proper grammar agreement analysis. It features a "Recruiter Mode" and displays corrections in a clear table format showing the original error, suggested correction, and grammatical explanation.*
-
 ![GUI Text 3](screenshots/FrenchLearningFeedbackEngine_Text2.png)
 
-#### French Grammar Correction - Article Agreement Error
-A French language learning application displaying grammar correction for the sentence "Elle mange un pomme." The system identifies an article agreement error, showing that "un pomme" (masculine article with feminine noun) should be corrected to "une pomme" (feminine article with feminine noun). The interface includes text input functionality, gender selection for grammar agreement analysis, and audio upload capabilities. The correction is displayed in a clear table format showing the error, suggested correction, and explanation that "Le déterminant s'accorde avec le nom « pomme »" (The determiner agrees with the noun "pomme"). The application is running in "Recruiter Mode" and demonstrates how the system catches common French grammar mistakes related to noun-article gender agreement.
+#### French Text Analysis with Grammar Correction - Article Agreement Error
+The application has processed the French text "Je vais à le marché" and identified the grammatical error "à le" which should be contracted to "au".
+The results display includes the original transcription, corrected sentence, and an explanatory error table with detailed grammar rules.
+provides real-time grammar feedback and corrections.
+The interface shows a text analysis tool where users can input French sentences (showing "Je suis aller chez mon mère" as an example) and receive detailed grammatical corrections.
+The system identifies errors such as incorrect past participle agreement ("aller" should be "allée") and determiner agreement ("mon mère" should be "ma mère"), providing explanations in French for each correction.
+The application includes both text input and audio upload functionality, with gender selection options for proper grammar agreement analysis.
+It features a "Recruiter Mode" and displays corrections in a clear table format showing the original error, suggested correction, and grammatical explanation.
+A French language learning application displaying grammar correction for the sentence "Elle mange un pomme." 
+The system identifies an article agreement error, showing that "un pomme" (masculine article with feminine noun) should be corrected to "une pomme" (feminine article with feminine noun).
+The interface includes text input functionality, gender selection for grammar agreement analysis, and audio upload capabilities. 
+The correction is displayed in a clear table format showing the error, suggested correction, and explanation that "Le déterminant s'accorde avec le nom « pomme »" (The determiner agrees with the noun "pomme"). 
+The application is running in "Recruiter Mode" and demonstrates how the system catches common French grammar mistakes related to noun-article gender agreement.
 
 ![GUI Text 4](screenshots/FrenchLearningFeedbackEngine_Text3.png)
 
 #### French Audio Analysis with Pronunciation and Grammar Corrections
-A French language learning application showing comprehensive feedback from audio analysis of the sentence "Je suis aller à école." The system provides both pronunciation and grammar corrections after analyzing an uploaded audio file (test.wav). The pronunciation corrections show that the user mispronounced "aller" as "alair," "école" as "ecolay," and "J" incorrectly. The grammar corrections identify two errors: missing liaison ("a" should be "à l'" before "école" due to vowel sound) and incorrect past participle agreement ("aller" should be "allé"). The interface includes both text input and audio upload functionality with gender selection for proper grammar analysis. An audio player at the bottom allows playback of the original recording, and the system notes the accent as "Unknown." The application demonstrates comprehensive language learning feedback combining speech recognition, pronunciation analysis, and grammatical error detection.RetryClaude can make mistakes. Please double-check responses. Sonnet 4
-The transcription shows the original spoken sentence, followed by the corrected version highlighting the grammatical fix. The interface includes both text and audio input capabilities with gender selection for gram$
+A French language learning application showing comprehensive feedback from audio analysis of the sentence "Je suis aller à école." 
+The system provides both pronunciation and grammar corrections after analyzing an uploaded audio file (test.wav). 
+The pronunciation corrections show that the user mispronounced "aller" as "alair," "école" as "ecolay," and "J" incorrectly. 
+The grammar corrections identify two errors: missing liaison ("a" should be "à l'" before "école" due to vowel sound) and incorrect past participle agreement ("aller" should be "allé"). 
+The interface includes both text input and audio upload functionality with gender selection for proper grammar analysis. 
+An audio player at the bottom allows playback of the original recording, and the system notes the accent as "Unknown." 
+Feedback combining speech recognition, pronunciation analysis, and grammatical error detection.
+The transcription shows the original spoken sentence, followed by the corrected version highlighting the grammatical fix. 
+The interface includes both text and audio input capabilities with gender selection for grammar agreement analysis.
 
 ![GUI Text 5](screenshots/FrenchLearningFeedbackEngine_Audio1.png)
 
 #### Recruiter Demonstration Mode
-Special evaluation mode popup that introduces the application's AI-driven capabilities to potential employers or evaluators. This mode provides an overview of the grammar, accent, and pronunciation correction features before showcasing the full functionality.*
+Special evaluation mode popup that introduces the application's AI-driven capabilities to potential employers or evaluators. 
+This mode provides an overview of the grammar, accent, and pronunciation correction features before showcasing the full functionality.
 
 ![GUI Text 1](screenshots/FrenchLearningFeedbackEngine_RecruiterMode_PopUp.png)
 
