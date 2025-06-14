@@ -36,13 +36,9 @@ A French language learning application displaying grammar correction for the sen
 
 #### French Audio Analysis with Pronunciation and Grammar Corrections
 A French language learning application showing comprehensive feedback from audio analysis of the sentence "Je suis aller à école." The system provides both pronunciation and grammar corrections after analyzing an uploaded audio file (test.wav). The pronunciation corrections show that the user mispronounced "aller" as "alair," "école" as "ecolay," and "J" incorrectly. The grammar corrections identify two errors: missing liaison ("a" should be "à l'" before "école" due to vowel sound) and incorrect past participle agreement ("aller" should be "allé"). The interface includes both text input and audio upload functionality with gender selection for proper grammar analysis. An audio player at the bottom allows playback of the original recording, and the system notes the accent as "Unknown." The application demonstrates comprehensive language learning feedback combining speech recognition, pronunciation analysis, and grammatical error detection.RetryClaude can make mistakes. Please double-check responses. Sonnet 4
+The transcription shows the original spoken sentence, followed by the corrected version highlighting the grammatical fix. The interface includes both text and audio input capabilities with gender selection for gram$
 
 ![GUI Text 5](screenshots/FrenchLearningFeedbackEngine_Audio1.png)
-
-#### French Elision Error Correction from Audio
-A French language learning application analyzing audio input (test2.wav) and identifying an elision error in the sentence "Nous sommes fatigues après la école." The system correctly identifies that "la école" should be contracted to "l'école" due to French elision rules, where the definite article "la" becomes "l'" before words beginning with a vowel sound. The transcription shows the original spoken sentence, followed by the corrected version highlighting the grammatical fix. The interface includes both text and audio input capabilities with gender selection for grammar analysis, and displays feedback in a clear table format showing the error, suggested correction, and explanation that "'la école' s'élide en 'l'école'" (elision rule). An audio player allows review of the 3-second recording, with the accent noted as "Unknown."
-
-![GUI Text 6](screenshots/FrenchLearningFeedbackEngine_Audio2.png)
 
 #### Recruiter Demonstration Mode
 Special evaluation mode popup that introduces the application's AI-driven capabilities to potential employers or evaluators. This mode provides an overview of the grammar, accent, and pronunciation correction features before showcasing the full functionality.*
