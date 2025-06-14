@@ -1,5 +1,6 @@
 ## French Learning Web App
-This Flask-based web application is designed to help French learners improve their pronunciation, grammar, and accent usage. It transcribes spoken French, identifies errors, and provides personalized audio feedback using AI-powered tools like Whisper and gTTS.
+This Flask-based web application is designed to help French learners improve their pronunciation, grammar, and accent usage.
+It transcribes spoken French, identifies errors, and provides personalized audio feedback using AI-powered tools like Whisper and gTTS.
 
 ### Features
 - Real-time speech transcription with Whisper
@@ -10,14 +11,13 @@ This Flask-based web application is designed to help French learners improve the
 - Audio support for transcribing WAV files
 - Explainability via an error table in the UI, showing errors, suggested corrections, and explanations
 - Gender-aware grammar corrections (e.g., past participle agreement)
-- Recruiter mode to demonstrate AI-driven grammar, accent, and pronunciation correction for evaluation purposes
 
 ### Screenshots
 #### Main Interface
 The main interface of a French language learning application designed to provide grammar, accent, and pronunciation feedback. 
 The clean, web-based interface features two primary input methods: a text entry section with a large text area for typing French sentences, and an audio upload option. 
 Users can enter French text directly or upload audio files for speech-to-text transcription. 
-The interface includes gender selection for accurate grammar agreement corrections and a recruiter mode for demonstration purposes.
+The interface includes gender selection for accurate grammar agreement corrections.
 
 ![GUI Text 2](screenshots/FrenchLearningFeedbackEngine_Text4.png)
 
@@ -51,12 +51,6 @@ The transcription shows the original spoken sentence, followed by the corrected 
 The interface includes both text and audio input capabilities with gender selection for grammar agreement analysis.
 
 ![GUI Text 5](screenshots/FrenchLearningFeedbackEngine_Audio1.png)
-
-#### Recruiter Demonstration Mode
-Special evaluation mode popup that introduces the application's AI-driven capabilities to potential employers or evaluators. 
-This mode provides an overview of the grammar, accent, and pronunciation correction features before showcasing the full functionality.
-
-![GUI Text 1](screenshots/FrenchLearningFeedbackEngine_RecruiterMode_PopUp.png)
 
 ### Files
 - `src/analyze.py`: Processes audio or text input using Whisper for transcription and language_tool_python for grammar checks, generating personalized audio feedback with gTTS.
