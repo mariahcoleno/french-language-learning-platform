@@ -125,7 +125,7 @@ class FrenchAnalyzer:
         # Post-correction cleanup: Fix any corruption from LanguageTool processing
         # Sometimes LanguageTool can create malformed text, so we clean it up
         corrected = re.sub(r'chez m+?a mère\.?', 'chez ma mère', corrected)
-        corrected = re.sub(r'à+ ?l'école', 'à l'école', corrected)
+        corrected = re.sub(r"à+ ?l'école", "à l'école", corrected)
         print(f"After corruption fix: {corrected}")
 
         # Gender agreement for past participles with "je suis"
