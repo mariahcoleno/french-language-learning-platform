@@ -76,7 +76,7 @@ The example shows analysis of the sentence "Je suis aller à école" demonstrati
 7. Proceed to "Run the App" below.
 
 #### Option 2: Local Setup (Existing Repository)
-1. Navigate to your local repository (adjust path as needed): `cd ~/Documents/french-language-learning-platform/french_learning_web_app`
+1. Navigate to your local repository (adjust path as needed): `cd ~/Documents/french-language-learning-platform/french_learning_web_app/`
 2. Setup and activate a virtual environment:
    - If existing: `source venv/bin/activate` (adjust path if venv is elsewhere)
    - If new:
