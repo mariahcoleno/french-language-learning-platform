@@ -131,7 +131,6 @@
 </head>
 <body>
   <h1>French Learning Web App</h1>
-  
 
   <!-- Special mode for demonstrating features to recruiters/reviewers -->
   <!-- This is a commented out line -->
@@ -141,29 +140,31 @@
 
   <!-- Text Analysis Section -->
   <h3>Enter Text</h3>
-  <form id="textForm">
-    <textarea id="inputText" rows="4" cols="50"></textarea>
+
+  <form id="textForm" action="/analyze" method="POST">
+    <textarea id="inputText" name="text" rows="4" cols="50"></textarea>
     <br>
-    
-    <!-- Dropdown with sample sentences for easy testing -->
-    <select id="preloadedSentences" onchange="loadPreloadedSentence()">
-      <option value="">Select a sentence</option>
-      {% for sentence in sentences %}
-      <option value="{{ sentence }}">{{ sentence }}</option>
-      {% endfor %}
+     
+    <select id="preloadedSentences" name="preloaded" onchange="loadPreloadedSentence()">
+        <option value="">Select a sentence</option>
+        {% for sentence in sentences %}
+        <option value="{{ sentence }}">{{ sentence }}</option>  
+        {% endfor %}
     </select>
     <br>
-    
+
     <!-- Gender selection affects French grammar agreement rules -->
     <label for="textGender">Select Gender for Grammar Agreement:</label>
     <select name="gender" id="textGender">
-      <option value="masculine">Masculine</option>
-      <option value="feminine">Feminine</option>
+        <option value="masculine">Masculine</option>
+        <option value="feminine">Feminine</option>  
     </select>
     <br>
-    <button type="button" onclick="analyzeText()">Analyze Text</button>
+    
+    <!-- Use EITHER this button OR the JavaScript one, not both -->
+    <button type="submit">Analyze Text</button>
   </form>
-  
+
   <!-- Audio Analysis Section -->
   <h3>Upload Audio</h3>
   <form id="audioForm">
