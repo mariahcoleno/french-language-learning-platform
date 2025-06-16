@@ -60,7 +60,7 @@ class FrenchAnalyzer:
 
         # Pre-correction: Fix common contractions before LanguageTool processing
         # Normalize "à l'école" variations (handles "a école", "à école", etc.)
-        corrected = re.sub(r'\b[aà]\s+l?'?école\b', 'à l'école', corrected, flags=re.IGNORECASE)
+        corrected = re.sub(r'\b[aà]\s+l?\'?école\b', 'à l\'école', corrected, flags=re.IGNORECASE)
         print(f"After initial 'à l'' correction: {corrected}")
 
         # Gender-specific corrections: Fix possessive determiners based on speaker gender
