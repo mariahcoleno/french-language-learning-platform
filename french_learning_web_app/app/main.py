@@ -1,5 +1,5 @@
 """
-Flask web application for French language learning with grammar and pronunciation analysis.
+Flask web application for French language learning with grammar and pronunciation analysis, including proper use of French diacritical marks.
 Provides REST API endpoints for text and audio analysis with real-time feedback.
 """
 
@@ -134,7 +134,10 @@ def analyze_text():
     if recruiter_mode:
         response["popup"] = "This app provides grammar, accent, and pronunciation correction to help you improve your French."
     
-    return jsonify(response)
+    return render_template('index.html', 
+                     sentences=PRELOADED_SENTENCES,
+                     analysis_results=response,
+                     original_text=text)
 
 @app.route('/static/<path:filename>')
 def serve_static(filename):
