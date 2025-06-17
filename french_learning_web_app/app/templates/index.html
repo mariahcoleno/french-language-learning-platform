@@ -41,6 +41,33 @@
       displayResult(result);
     }
 
+    {% if analysis_results %}
+    <div class="results">
+        <h3>Analysis Results</h3>
+        <p><strong>Transcription:</strong> {{ analysis_results.transcription }}</p>
+        <p><strong>Corrected Sentence:</strong> <span style="color: green;">{{ analysis_results.corrected_text }}</span></p>
+    
+        {% if analysis_results.errors %}
+        <h4>Grammar Corrections:</h4>
+        <table border="1" style="border-collapse: collapse; width: 100%;">
+            <tr>
+                <th style="background-color: #f0f0f0; padding: 8px;">Error</th>
+                <th style="background-color: #f0f0f0; padding: 8px;">Suggestions</th>
+                <th style="background-color: #f0f0f0; padding: 8px;">Explanation</th>
+            </tr>
+            {% for error in analysis_results.errors %}
+            <tr>
+                <td style="padding: 8px; color: red;">{{ error.error }}</td>
+                <td style="padding: 8px; color: green;">{{ error.suggestions|join(', ') }}</td>
+                <td style="padding: 8px;">{{ error.message }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% endif %}
+    </div>
+    <br>
+    {% endif %}
+
     /**
      * Analyzes uploaded audio file for pronunciation and grammar
      * Handles speech-to-text conversion and feedback generation
