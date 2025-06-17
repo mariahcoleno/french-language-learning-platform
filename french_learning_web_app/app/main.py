@@ -21,19 +21,66 @@ analyzer = FrenchAnalyzer()
 # Configure upload directory for audio files
 app.config['UPLOAD_FOLDER'] = 'app/uploads'
 
-# Sample sentences with common French grammar errors for testing/demo
+# Sample sentences with common French grammar errors for testing/demo - Now in French with explanations
 PRELOADED_SENTENCES = [
-    "Je vais à le marché.",  # Should be "au marché" (contraction)
-    "Je suis aller chez mon mère.",  # Should be "allé" (past participle agreement) and "ma mère" (gender)
-    "Elle mange un pomme."  # Should be "une pomme" (gender agreement)
+    {
+        "text": "Je vais à le marché.",
+        "description": "Erreur de contraction - devrait être 'au marché'"
+    },
+    {
+        "text": "Je suis aller chez mon mère.",
+        "description": "Accord du participe passé et genre - devrait être 'allé' et 'ma mère'"
+    },
+    {
+        "text": "Elle mange un pomme.",
+        "description": "Accord de genre - devrait être 'une pomme'"
+    },
+    {
+        "text": "Je mange à école.",
+        "description": "Contraction manquante - devrait être 'à l'école'"
+    },
+    {
+        "text": "Il est une belle fille.",
+        "description": "Accord pronom-adjectif - devrait être 'Elle est une belle fille'"
+    }
 ]
+
+# French interface text
+FRENCH_INTERFACE = {
+    "page_title": "Analyseur de Français - Correction Grammaticale et Prononciation",
+    "main_heading": "Analyseur de Langue Française",
+    "description": "Améliorez votre français avec notre outil d'analyse grammaticale et de prononciation",
+    "text_analysis_tab": "Analyse de Texte",
+    "audio_analysis_tab": "Analyse Audio",
+    "sample_sentences": "Phrases d'exemple :",
+    "gender_label": "Genre du locuteur :",
+    "gender_masculine": "Masculin",
+    "gender_feminine": "Féminin",
+    "text_input_placeholder": "Entrez votre texte français ici...",
+    "analyze_button": "Analyser",
+    "record_button": "Enregistrer",
+    "upload_button": "Télécharger un fichier audio",
+    "results_heading": "Résultats de l'analyse :",
+    "transcription_label": "Transcription :",
+    "errors_label": "Erreurs détectées :",
+    "corrected_text_label": "Texte corrigé :",
+    "accent_label": "Accent détecté :",
+    "pronunciation_corrections_label": "Corrections de prononciation :",
+    "no_errors": "Aucune erreur détectée. Excellent travail !",
+    "demo_popup": "Cette application fournit des corrections grammaticales, d'accent et de prononciation pour vous aider à améliorer votre français.",
+    "error_no_audio": "Aucun fichier audio fourni",
+    "error_no_text": "Aucun texte fourni",
+    "file_not_found": "Fichier non trouvé"
+}
 
 @app.route('/')
 def index():
     """
-    Renders the main page with preloaded sample sentences.
+    Renders the main page with preloaded sample sentences and French interface.
     """
-    return render_template('index.html', sentences=PRELOADED_SENTENCES)
+    return render_template('index.html', 
+                         sentences=PRELOADED_SENTENCES,
+                         interface=FRENCH_INTERFACE)
 
 @app.route('/analyze_audio', methods=['POST'])
 def analyze_audio():
@@ -53,11 +100,11 @@ def analyze_audio():
     
     # Validate audio file presence
     if 'audio' not in request.files:
-        return jsonify({"error": "No audio file provided"}), 400
+        return jsonify({"error": FRENCH_INTERFACE["error_no_audio"]}), 400
     
     audio = request.files['audio']
     if audio.filename == '':
-        return jsonify({"error": "No audio file provided"}), 400
+        return jsonify({"error": FRENCH_INTERFACE["error_no_audio"]}), 400
     
     # Save uploaded audio file
     filename = os.path.join(app.config['UPLOAD_FOLDER'], 'input.wav')
@@ -75,12 +122,13 @@ def analyze_audio():
         "accent": result["accent"],
         "audio": result.get("audio_path"),
         "pronunciation_corrections": result.get("pronunciation_corrections", []),
-        "recruiter_mode": recruiter_mode
+        "recruiter_mode": recruiter_mode,
+        "interface": FRENCH_INTERFACE
     }
     
     # Add demo popup message for recruiter mode
     if recruiter_mode:
-        response["popup"] = "This app provides grammar, accent, and pronunciation correction to help you improve your French."
+        response["popup"] = FRENCH_INTERFACE["demo_popup"]
     
     return jsonify(response)
 
@@ -103,7 +151,7 @@ def analyze_text():
     
     # Validate text input
     if not text:
-        return jsonify({"error": "No text provided"}), 400
+        return jsonify({"error": FRENCH_INTERFACE["error_no_text"]}), 400
     
     # Analyze text for grammar errors
     errors, corrected_text = analyzer.analyze_text(text, gender=gender)
@@ -127,17 +175,19 @@ def analyze_text():
         "accent": result["accent"],
         "audio": result.get("audio_path"),
         "pronunciation_corrections": result.get("pronunciation_corrections", []),
-        "recruiter_mode": recruiter_mode
+        "recruiter_mode": recruiter_mode,
+        "interface": FRENCH_INTERFACE
     }
     
     # Add demo popup message for recruiter mode
     if recruiter_mode:
-        response["popup"] = "This app provides grammar, accent, and pronunciation correction to help you improve your French."
+        response["popup"] = FRENCH_INTERFACE["demo_popup"]
     
     return render_template('index.html', 
                      sentences=PRELOADED_SENTENCES,
                      analysis_results=response,
-                     original_text=text)
+                     original_text=text,
+                     interface=FRENCH_INTERFACE)
 
 @app.route('/static/<path:filename>')
 def serve_static(filename):
@@ -150,7 +200,7 @@ def serve_static(filename):
     
     if os.path.exists(static_path):
         return send_from_directory(app.static_folder, filename)
-    return "File not found", 404
+    return FRENCH_INTERFACE["file_not_found"], 404
 
 if __name__ == "__main__":
     # Run Flask development server
