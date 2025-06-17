@@ -1,44 +1,42 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
-  <title>French Learning Web App</title>
+  <title>Application d'Apprentissage du Français</title>
   <style>
-    /* Basic styling for the application */
+    /* Styles de base pour l'application */
     body { font-family: Arial; margin: 20px; }
     .error { color: red; }
     .correct { color: green; }
     #feedback { margin-top: 20px; }
     
-    /* Table styling for grammar corrections display */
-    table { width: 100%; border-collapse: collapse; }
+    /* Style des tableaux pour l'affichage des corrections grammaticales */
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
     th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
     th { background-color: #f2f2f2; }
   </style>
   <script>
     /**
-     * Analyzes user-submitted text for French grammar errors
-     * Sends text data to backend and displays corrections
+     * Analyse le texte soumis par l'utilisateur pour les erreurs grammaticales françaises
+     * Envoie les données texte au backend et affiche les corrections
      */
     async function analyzeText() {
-      // Get user input values
+      // Récupérer les valeurs d'entrée utilisateur
       const text = document.getElementById('inputText').value;
-      const recruiterMode = document.getElementById('recruiterMode') ? document.getElementById('recruiterMode').checked : false;
       const gender = document.getElementById('textGender').value;
       
-      // Validate text input
+      // Valider l'entrée de texte
       if (!text.trim()) {
-        alert('Please enter some text to analyze.');
+        alert('Veuillez entrer du texte à analyser.');
         return;
       }
       
-      // Prepare form data for POST request
+      // Préparer les données de formulaire pour la requête POST
       const formData = new FormData();
       formData.append('text', text);
-      formData.append('recruiter_mode', recruiterMode);
       formData.append('gender', gender);
       
       try {
-        // Send request to backend for text analysis
+        // Envoyer la requête au backend pour l'analyse de texte
         const response = await fetch('/analyze_text', {
           method: 'POST',
           body: formData
@@ -49,37 +47,35 @@
         if (response.ok) {
           displayResult(result);
         } else {
-          document.getElementById('feedback').innerHTML = `<p class="error">Error: ${result.error}</p>`;
+          document.getElementById('feedback').innerHTML = `<p class="error">Erreur: ${result.error}</p>`;
         }
       } catch (error) {
-        document.getElementById('feedback').innerHTML = `<p class="error">Error: ${error.message}</p>`;
+        document.getElementById('feedback').innerHTML = `<p class="error">Erreur: ${error.message}</p>`;
       }
     }
 
     /**
-     * Analyzes uploaded audio file for pronunciation and grammar
-     * Handles speech-to-text conversion and feedback generation
+     * Analyse le fichier audio téléchargé pour la prononciation et la grammaire
+     * Gère la conversion parole-texte et la génération de commentaires
      */
     async function analyzeSpeech() {
-      // Get uploaded audio file and user preferences
+      // Récupérer le fichier audio téléchargé et les préférences utilisateur
       const audioInput = document.getElementById('audioInput').files[0];
-      const recruiterMode = document.getElementById('recruiterMode') ? document.getElementById('recruiterMode').checked : false;
       const gender = document.getElementById('audioGender').value;
       
-      // Validate audio file
+      // Valider le fichier audio
       if (!audioInput) {
-        alert('Please select an audio file to analyze.');
+        alert('Veuillez sélectionner un fichier audio à analyser.');
         return;
       }
       
-      // Prepare form data with audio file
+      // Préparer les données de formulaire avec le fichier audio
       const formData = new FormData();
       formData.append('audio', audioInput);
-      formData.append('recruiter_mode', recruiterMode);
       formData.append('gender', gender);
       
       try {
-        // Send audio to backend for analysis
+        // Envoyer l'audio au backend pour analyse
         const response = await fetch('/analyze_audio', {
           method: 'POST',
           body: formData
@@ -90,68 +86,65 @@
         if (response.ok) {
           displayResult(result);
         } else {
-          document.getElementById('feedback').innerHTML = `<p class="error">Error: ${result.error}</p>`;
+          document.getElementById('feedback').innerHTML = `<p class="error">Erreur: ${result.error}</p>`;
         }
       } catch (error) {
-        document.getElementById('feedback').innerHTML = `<p class="error">Error: ${error.message}</p>`;
+        document.getElementById('feedback').innerHTML = `<p class="error">Erreur: ${error.message}</p>`;
       }
     }
 
     /**
-     * Displays analysis results in a formatted feedback section
-     * Handles transcription, corrections, pronunciation feedback, and grammar errors
-     * @param {Object} result - Analysis results from backend
+     * Affiche les résultats d'analyse dans une section de commentaires formatée
+     * Gère la transcription, les corrections, les commentaires de prononciation et les erreurs grammaticales
+     * @param {Object} result - Résultats d'analyse du backend
      */
     function displayResult(result) {
       const feedbackDiv = document.getElementById('feedback');
-      let html = `<h3>Analysis Results</h3>`;
+      let html = `<h3>Résultats de l'Analyse</h3>`;
       html += `<p><strong>Transcription:</strong> ${result.transcription}</p>`;
       
-      // Display corrected text if available
+      // Afficher le texte corrigé s'il est disponible
       if (result.corrected_text) {
-        html += `<p><strong>Corrected Sentence:</strong> <span class="correct">${result.corrected_text}</span></p>`;
+        html += `<p><strong>Phrase Corrigée:</strong> <span class="correct">${result.corrected_text}</span></p>`;
       }
 
-      // Display pronunciation corrections for audio input
+      // Afficher les corrections de prononciation pour l'entrée audio
       if (result.pronunciation_corrections && result.pronunciation_corrections.length > 0) {
-        html += '<p><strong>Pronunciation Corrections:</strong></p><ul>';
+        html += '<p><strong>Corrections de Prononciation:</strong></p><ul>';
         result.pronunciation_corrections.forEach(c => {
-          html += `<li>You pronounced "${c.error}" but it was corrected to "${c.corrected}".</li>`;
+          html += `<li>Vous avez prononcé "${c.error}" mais cela a été corrigé en "${c.corrected}".</li>`;
         });
         html += '</ul>';
       }
 
-      // Display grammar errors in a structured table
+      // Afficher les erreurs grammaticales dans un tableau structuré
       if (result.errors && result.errors.length > 0) {
-        html += '<h4>Grammar Corrections:</h4>';
-        html += '<table><tr><th>Error</th><th>Suggestions</th><th>Explanation</th></tr>';
+        html += '<h4>Corrections Grammaticales:</h4>';
+        html += '<table><tr><th>Erreur</th><th>Suggestions</th><th>Explication</th></tr>';
         result.errors.forEach(error => {
           html += `<tr><td class="error">${error.error}</td><td class="correct">${error.suggestions.join(', ')}</td><td>${error.message}</td></tr>`;
         });
         html += '</table>';
+      } else {
+        html += '<p><strong>Aucune erreur grammaticale détectée!</strong></p>';
       }
 
-      // Display detected accent information
+      // Afficher les informations d'accent détectées
       if (result.accent && result.accent !== 'N/A') {
         html += `<p><strong>Accent:</strong> ${result.accent}</p>`;
       }
 
-      // Embed audio playback if available
+      // Intégrer la lecture audio si disponible
       if (result.audio) {
         html += `<p><strong>Audio:</strong></p><audio controls src="${result.audio}"></audio>`;
       }
 
       feedbackDiv.innerHTML = html;
-
-      // Show recruiter mode popup for demonstration purposes
-      if (result.recruiter_mode && result.popup) {
-        alert(result.popup);
-      }
     }
 
     /**
-     * Loads a preselected sentence into the text input field
-     * Helper function for demo purposes and user convenience
+     * Charge une phrase présélectionnée dans le champ de saisie de texte
+     * Fonction d'aide pour la démonstration et la commodité de l'utilisateur
      */
     function loadPreloadedSentence() {
       const select = document.getElementById('preloadedSentences');
@@ -159,7 +152,7 @@
     }
 
     /**
-     * Prevents default form submission and uses JavaScript analysis instead
+     * Empêche la soumission de formulaire par défaut et utilise l'analyse JavaScript à la place
      */
     function handleTextFormSubmit(event) {
       event.preventDefault();
@@ -168,59 +161,55 @@
   </script>
 </head>
 <body>
-  <h1>French Learning Web App</h1>
+  <h1>Application d'Apprentissage du Français</h1>
 
-  <!-- Special mode for demonstrating features to recruiters/reviewers -->
-  <label><input type="checkbox" id="recruiterMode"> Recruiter Mode</label>
-  <br><br>
-
-  <!-- Text Analysis Section -->
-  <h3>Enter Text</h3>
+  <!-- Section d'Analyse de Texte -->
+  <h3>Entrer du Texte</h3>
 
   <form id="textForm" onsubmit="handleTextFormSubmit(event)">
-    <textarea id="inputText" name="text" rows="4" cols="50" placeholder="Enter French text to analyze..."></textarea>
+    <textarea id="inputText" name="text" rows="4" cols="50" placeholder="Entrez du texte français à analyser..."></textarea>
     <br><br>
      
     <select id="preloadedSentences" onchange="loadPreloadedSentence()">
-        <option value="">Select a sample sentence</option>
+        <option value="">Sélectionner une phrase d'exemple</option>
         {% for sentence in sentences %}
         <option value="{{ sentence }}">{{ sentence }}</option>  
         {% endfor %}
     </select>
     <br><br>
 
-    <!-- Gender selection affects French grammar agreement rules -->
-    <label for="textGender">Select Gender for Grammar Agreement:</label>
+    <!-- La sélection du genre affecte les règles d'accord grammatical français -->
+    <label for="textGender">Sélectionner le Genre pour l'Accord Grammatical:</label>
     <select name="gender" id="textGender">
-        <option value="masculine">Masculine</option>
-        <option value="feminine">Feminine</option>  
+        <option value="masculine">Masculin</option>
+        <option value="feminine">Féminin</option>  
     </select>
     <br><br>
     
-    <button type="submit">Analyze Text</button>
+    <button type="submit">Analyser le Texte</button>
   </form>
 
   <hr>
 
-  <!-- Audio Analysis Section -->
-  <h3>Upload Audio</h3>
+  <!-- Section d'Analyse Audio -->
+  <h3>Télécharger de l'Audio</h3>
   <form id="audioForm" onsubmit="event.preventDefault(); analyzeSpeech();">
     <input type="file" id="audioInput" accept="audio/*">
     <br><br>
     
-    <!-- Gender selection for audio analysis (affects grammar corrections) -->
-    <label for="audioGender">Select Gender for Grammar Agreement:</label>
+    <!-- Sélection du genre pour l'analyse audio (affecte les corrections grammaticales) -->
+    <label for="audioGender">Sélectionner le Genre pour l'Accord Grammatical:</label>
     <select name="gender" id="audioGender">
-      <option value="masculine">Masculine</option>
-      <option value="feminine">Feminine</option>
+      <option value="masculine">Masculin</option>
+      <option value="feminine">Féminin</option>
     </select>
     <br><br>
-    <button type="button" onclick="analyzeSpeech()">Analyze Speech</button>
+    <button type="button" onclick="analyzeSpeech()">Analyser la Parole</button>
   </form>
   
   <hr>
   
-  <!-- Results will be dynamically populated here -->
+  <!-- Les résultats seront remplis dynamiquement ici -->
   <div id="feedback"></div>
 </body>
 </html>
