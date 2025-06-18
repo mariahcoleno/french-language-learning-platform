@@ -390,12 +390,12 @@
                     <label for="example-select">Sélectionnez une phrase d'exemple :</label>
                     <select id="example-select">
                         <option value="">-- Choisissez un exemple --</option>
-                        <option value="Je vais à le marché. (Contraction article)">Je vais à le marché. (Contraction article)</option>
+                        <option value="Je vais à le marché. (Contraction d'article)">Je vais à le marché. (Contraction d'article)</option>
                         <option value="Je suis aller chez mon mère. (Accord du participe passé + Accord de genre)">Je suis aller chez mon mère. (Accord du participe passé + Accord de genre)</option>
-                        <option value="Elle mange un pomme. (Accord de genre article)">Elle mange un pomme. (Accord de genre article)</option>
+                        <option value="Elle mange un pomme. (Accord de genre de l'article)">Elle mange un pomme. (Accord de genre de l'article)</option>
                         <option value="Il est une belle fille. (Accord du sujet)">Il est une belle fille. (Accord du sujet)</option>
-                        <option value="Nous mange à la cantine. (Conjugaison verbe)">Nous mange à la cantine. (Conjugaison verbe)</option>
-                        <option value="Les chat sont mignon. (Accord pluriel)">Les chat sont mignon. (Accord pluriel)</option>
+                        <option value="Nous mange à la cantine. (Conjugaison du verbe)">Nous mange à la cantine. (Conjugaison du verbe)</option>
+                        <option value="Les chat sont mignon. (Accord du pluriel)">Les chat sont mignon. (Accord du pluriel)</option>
                     </select>
                 </div>
 
@@ -465,7 +465,7 @@
             "Je vais à le marché.": {
                 errors: [
                     {
-                        type: "Contraction article",
+                        type: "Contraction d'article",
                         original: "Je vais à le marché.",
                         corrected: "Je vais au marché.",
                         explanation: "Les prépositions 'à' et 'de' se contractent avec l'article défini 'le' : à + le = au, de + le = du.",
@@ -499,7 +499,7 @@
             "Elle mange un pomme.": {
                 errors: [
                     {
-                        type: "Accord de genre article",
+                        type: "Accord de genre de l'article",
                         original: "Elle mange un pomme.",
                         corrected: "Elle mange une pomme.",
                         explanation: "Le nom 'pomme' est féminin, donc l'article indéfini doit être 'une' et non 'un'.",
@@ -525,7 +525,7 @@
             "Nous mange à la cantine.": {
                 errors: [
                     {
-                        type: "Conjugaison verbe",
+                        type: "Conjugaison du verbe",
                         original: "Nous mange à la cantine.",
                         corrected: "Nous mangeons à la cantine.",
                         explanation: "Le verbe doit être conjugué à la première personne du pluriel avec 'nous'.",
@@ -538,7 +538,7 @@
             "Les chat sont mignon.": {
                 errors: [
                     {
-                        type: "Accord pluriel",
+                        type: "Accord du pluriel",
                         original: "Les chat sont mignon.",
                         corrected: "Les chats sont mignons.",
                         explanation: "Les noms et adjectifs doivent s'accorder en nombre avec l'article 'les' (pluriel).",
