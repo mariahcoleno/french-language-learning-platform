@@ -429,10 +429,8 @@
                 </div>
                 
                 <div class="result-item">
-                    <div class="result-label">Erreurs détectées :</div>
-                    <div class="result-value" id="error-count"></div>
                     <details class="errors-dropdown" id="errors-dropdown">
-                        <summary id="errors-summary">Voir les erreurs détectées</summary>
+                        <summary id="errors-summary">Erreurs détectées : 0</summary>
                         <div class="error-list" id="error-list"></div>
                     </details>
                 </div>
@@ -616,7 +614,6 @@
             const resultsSection = document.getElementById('results');
             const transcription = document.getElementById('transcription');
             const selectedGender = document.getElementById('selected-gender');
-            const errorCount = document.getElementById('error-count');
             const correctedText = document.getElementById('corrected-text');
             const errorsDropdown = document.getElementById('errors-dropdown');
             const errorsSummary = document.getElementById('errors-summary');
@@ -629,13 +626,13 @@
             // Fill basic info
             transcription.textContent = `"${originalText}"`;
             selectedGender.textContent = gender;
-            errorCount.textContent = rule.errors.length;
             correctedText.textContent = rule.corrected;
 
             // Update errors dropdown
+            errorsSummary.textContent = `Erreurs détectées : ${rule.errors.length}`;
+            
             if (rule.errors.length > 0) {
                 errorsDropdown.style.display = 'block';
-                errorsSummary.textContent = `Erreurs détectées : ${rule.errors.length}`;
                 
                 // Create error list for dropdown
                 errorList.innerHTML = '';
@@ -646,7 +643,8 @@
                     errorList.appendChild(errorItem);
                 });
             } else {
-                errorsDropdown.style.display = 'none';
+                errorsDropdown.style.display = 'block'; // Still show it but with 0 errors
+                errorList.innerHTML = '<div class="error-item">Aucune erreur détectée.</div>';
             }
 
             // Fill errors table
