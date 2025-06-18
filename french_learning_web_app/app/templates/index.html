@@ -1,370 +1,705 @@
 <!DOCTYPE html>
-<html lang="fr" translate="no">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="google" content="notranslate">
-    <title>Analyseur de Français - Correction Grammaticale et Prononciation</title>
+    <title>Analyseur de Grammaire Française</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        h1 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-        .description {
-            text-align: center;
-            color: #666;
-            margin-bottom: 30px;
-            font-style: italic;
-        }
-        .section {
-            margin-bottom: 30px;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        .section h2 {
-            color: #666;
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        textarea, select, input[type="file"] {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+        * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
         }
-        textarea {
-            height: 100px;
-            resize: vertical;
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
         }
-        button {
-            background-color: #007bff;
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
             color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-right: 10px;
+            padding: 30px;
+            text-align: center;
         }
-        button:hover {
-            background-color: #0056b3;
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
         }
-        .result {
-            margin-top: 15px;
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .examples-section {
+            background: #f8f9ff;
+            padding: 20px 30px;
+            border-bottom: 1px solid #e1e5e9;
+        }
+
+        .examples-section h3 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .examples-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .example-item {
+            background: white;
             padding: 15px;
-            background-color: #f8f9fa;
-            border-left: 4px solid #007bff;
-            border-radius: 4px;
+            border-radius: 8px;
+            border-left: 4px solid #e53e3e;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
-        .error-table {
+
+        .example-item .incorrect {
+            color: #e53e3e;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .example-item .correct {
+            color: #38a169;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .main-content {
+            padding: 30px;
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            resize: vertical;
+            transition: border-color 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            background: white;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+
+        .analyze-btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .analyze-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(79, 172, 254, 0.3);
+        }
+
+        .analyze-btn:active {
+            transform: translateY(0);
+        }
+
+        .results-section {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .results-header h3 {
+            color: #2d3748;
+            font-size: 1.5rem;
+        }
+
+        .play-btn {
+            background: #38a169;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: background-color 0.2s ease;
+        }
+
+        .play-btn:hover {
+            background: #2f855a;
+        }
+
+        .result-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #4facfe;
+        }
+
+        .result-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .result-label {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+
+        .result-value {
+            color: #4a5568;
+        }
+
+        .corrected-text {
+            color: #38a169;
+            font-weight: 500;
+        }
+
+        .errors-dropdown {
+            background: #fff5f5;
+            border: 1px solid #fed7d7;
+            border-radius: 6px;
+            padding: 12px;
+            margin-top: 10px;
+        }
+
+        .errors-dropdown summary {
+            cursor: pointer;
+            font-weight: 600;
+            color: #e53e3e;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .errors-dropdown summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .errors-dropdown[open] summary::after {
+            transform: rotate(180deg);
+        }
+
+        .errors-dropdown summary::after {
+            content: '▼';
+            transition: transform 0.2s ease;
+        }
+
+        .error-list {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #fed7d7;
+        }
+
+        .error-item {
+            padding: 8px 0;
+            color: #742a2a;
+            font-size: 14px;
+        }
+
+        .error-item:not(:last-child) {
+            border-bottom: 1px solid #fed7d7;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+        }
+
+        .errors-table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        .error-table th, .error-table td {
-            border: 1px solid #ddd;
-            padding: 12px;
+
+        .errors-table th {
+            background: #4facfe;
+            color: white;
+            padding: 15px 12px;
             text-align: left;
+            font-weight: 600;
         }
-        .error-table th {
-            background-color: #f2f2f2;
-            font-weight: bold;
+
+        .errors-table td {
+            padding: 15px 12px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
         }
-        .error-table tr:nth-child(even) {
-            background-color: #f9f9f9;
+
+        .errors-table tr:last-child td {
+            border-bottom: none;
         }
-        .error-text {
-            color: #dc3545;
-            font-weight: bold;
+
+        .errors-table tr:nth-child(even) {
+            background: #f7fafc;
         }
-        .corrected-text {
-            color: #28a745;
-            font-weight: bold;
+
+        .original-text {
+            color: #e53e3e;
+            font-weight: 500;
         }
-        .sample-sentences {
-            background-color: #e9ecef;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
+
+        .corrected-text-table {
+            color: #38a169;
+            font-weight: 500;
         }
-        .sample-sentences h3 {
-            margin-top: 0;
-            color: #495057;
+
+        .hidden {
+            display: none;
         }
-        .sample-sentences ul {
-            margin: 10px 0;
-            padding-left: 20px;
-        }
-        .sample-sentences li {
-            margin-bottom: 8px;
-            color: #6c757d;
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 0 10px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .main-content, .examples-section {
+                padding: 20px;
+            }
+
+            .examples-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .errors-table {
+                font-size: 14px;
+            }
+            
+            .errors-table th, .errors-table td {
+                padding: 10px 8px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Analyseur de Langue Française</h1>
-        <p class="description">Améliorez votre français avec notre outil d'analyse grammaticale et de prononciation</p>
-        
-        <div class="section">
-            <h2>Analyse de Texte</h2>
-            
-            <div class="sample-sentences">
-                <h3>Phrases d'exemple :</h3>
-                <ul>
-                    <li><strong>Je vais à le marché.</strong> - Erreur de contraction</li>
-                    <li><strong>Je suis aller chez mon mère.</strong> - Accord du participe passé et genre</li>
-                    <li><strong>Elle mange un pomme.</strong> - Accord de genre</li>
-                    <li><strong>Je mange à école.</strong> - Contraction manquante</li>
-                    <li><strong>Il est une belle fille.</strong> - Accord pronom-adjectif</li>
-                </ul>
-            </div>
-            
-            <textarea id="textInput" placeholder="Entrez votre texte français ici..."></textarea>
-            
-            <label for="exampleSelect">Sélectionnez une phrase d'exemple :</label>
-            <select id="exampleSelect">
-                <option value="">-- Choisir un exemple --</option>
-                <option value="Je vais à le marché.">Je vais à le marché. (Erreur de contraction)</option>
-                <option value="Je suis aller chez mon mère.">Je suis aller chez mon mère. (Accord du participe passé)</option>
-                <option value="Elle mange un pomme.">Elle mange un pomme. (Accord de genre)</option>
-                <option value="Je mange à école.">Je mange à école. (Contraction manquante)</option>
-                <option value="Il est une belle fille.">Il est une belle fille. (Accord pronom-adjectif)</option>
-            </select>
-            
-            <label for="genderSelect">Genre du locuteur :</label>
-            <select id="genderSelect">
-                <option value="masculin">Masculin</option>
-                <option value="féminin">Féminin</option>
-            </select>
-            
-            <button onclick="analyzeText()">Analyser</button>
-            
-            <div id="textResult" class="result" style="display: none;">
-                <h3>Résultats de l'analyse :</h3>
-                <div id="analysisContent"></div>
+        <div class="header">
+            <h1>🇫🇷 Analyseur de Grammaire Française</h1>
+            <p>Analysez et corrigez vos textes français automatiquement</p>
+        </div>
+
+        <div class="examples-section">
+            <h3>💡 Exemples d'erreurs courantes :</h3>
+            <div class="examples-grid">
+                <div class="example-item">
+                    <div class="incorrect">❌ Je mange à école.</div>
+                    <div class="correct">✅ Je mange à l'école.</div>
+                </div>
+                <div class="example-item">
+                    <div class="incorrect">❌ Mon mère est belle.</div>
+                    <div class="correct">✅ Ma mère est belle.</div>
+                </div>
             </div>
         </div>
-        
-        <div class="section">
-            <h2>Analyse Audio</h2>
-            <input type="file" id="audioFile" accept="audio/*">
-            
-            <label for="audioGenderSelect">Genre du locuteur :</label>
-            <select id="audioGenderSelect">
-                <option value="masculin">Masculin</option>
-                <option value="féminin">Féminin</option>
-            </select>
-            
-            <button onclick="analyzeAudio()">Analyser</button>
-            
-            <div id="audioResult" class="result" style="display: none;">
-                <h3>Résultats de l'analyse :</h3>
-                <div id="audioContent"></div>
+
+        <div class="main-content">
+            <div class="input-section">
+                <div class="input-group">
+                    <label for="text-input">Entrez votre texte en français :</label>
+                    <textarea id="text-input" placeholder="Écrivez votre texte ici...">Je suis aller chez mon mère.</textarea>
+                </div>
+
+                <div class="input-group">
+                    <label for="example-select">Sélectionnez une phrase d'exemple :</label>
+                    <select id="example-select">
+                        <option value="">-- Choisissez un exemple --</option>
+                        <option value="Je suis aller chez mon mère. (Accord du participe passé + Accord de genre)">Je suis aller chez mon mère. (Accord du participe passé + Accord de genre)</option>
+                        <option value="Il est une belle fille. (Accord du sujet)">Il est une belle fille. (Accord du sujet)</option>
+                        <option value="Nous mange à la cantine. (Conjugaison verbe)">Nous mange à la cantine. (Conjugaison verbe)</option>
+                        <option value="Les chat sont mignon. (Accord pluriel)">Les chat sont mignon. (Accord pluriel)</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="speaker-gender">Genre du locuteur :</label>
+                    <select id="speaker-gender">
+                        <option value="féminin">Féminin</option>
+                        <option value="masculin">Masculin</option>
+                    </select>
+                </div>
+
+                <button class="analyze-btn" onclick="analyzeText()">Analyser</button>
+            </div>
+
+            <div id="results" class="results-section hidden">
+                <div class="results-header">
+                    <h3>Résultats de l'analyse :</h3>
+                    <button class="play-btn" onclick="playCorrection()">
+                        🔊 Écouter la correction
+                    </button>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-label">Transcription :</div>
+                    <div class="result-value" id="transcription"></div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-label">Genre sélectionné :</div>
+                    <div class="result-value" id="selected-gender"></div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-label">Erreurs détectées :</div>
+                    <div class="result-value" id="error-count"></div>
+                    <details class="errors-dropdown" id="errors-dropdown">
+                        <summary id="errors-summary">Voir les erreurs détectées</summary>
+                        <div class="error-list" id="error-list"></div>
+                    </details>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-label">Texte corrigé :</div>
+                    <div class="result-value corrected-text" id="corrected-text"></div>
+                </div>
+
+                <table class="errors-table" id="errors-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Phrase Originale</th>
+                            <th>Phrase Corrigée</th>
+                            <th>Erreur Identifiée</th>
+                            <th>Explication</th>
+                        </tr>
+                    </thead>
+                    <tbody id="errors-tbody">
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 
     <script>
-        // Prevent Google Translate from interfering
-        document.documentElement.classList.add('notranslate');
-        
-        // French grammar error database
-        const grammarErrors = {
-            "Je vais à le marché.": {
-                errors: ["Contraction incorrecte : 'à le' doit être contracté en 'au'"],
-                corrected: "Je vais au marché.",
-                explanation: "En français, la préposition 'à' + l'article défini 'le' se contracte obligatoirement en 'au'."
-            },
+        // Sample data for grammar analysis
+        const grammarRules = {
             "Je suis aller chez mon mère.": {
                 errors: [
-                    "Accord du participe passé : 'aller' doit s'accorder avec 'je' (masculin/féminin)",
-                    "Accord de genre : 'mon mère' doit être 'ma mère'"
+                    {
+                        type: "Accord du participe passé",
+                        original: "Je suis aller chez mon mère.",
+                        corrected: "Je suis allée chez ma mère.",
+                        explanation: "Le participe passé avec 'être' s'accorde avec le sujet. 'Mère' est féminin, donc 'ma' et non 'mon'.",
+                        errorType: "aller → allée",
+                        position: {start: 8, end: 13}
+                    },
+                    {
+                        type: "Accord de genre",
+                        original: "Je suis aller chez mon mère.",
+                        corrected: "Je suis allée chez ma mère.", 
+                        explanation: "Le participe passé avec 'être' s'accorde avec le sujet. 'Mère' est féminin, donc 'ma' et non 'mon'.",
+                        errorType: "mon mère → ma mère",
+                        position: {start: 19, end: 28}
+                    }
                 ],
-                getCorrected: function(gender) {
-                    return gender === 'masculin' ? "Je suis allé chez ma mère." : "Je suis allée chez ma mère.";
-                },
-                explanation: "Le participe passé avec 'être' s'accorde avec le sujet. 'Mère' est féminin, donc 'ma' et non 'mon'."
-            },
-            "Elle mange un pomme.": {
-                errors: ["Accord de genre : 'pomme' est féminin, l'article doit être 'une'"],
-                corrected: "Elle mange une pomme.",
-                explanation: "Le nom 'pomme' est féminin en français, il faut donc utiliser l'article indéfini féminin 'une'."
-            },
-            "Je mange à école.": {
-                errors: ["Contraction manquante : 'à' + 'l'école' manque l'article défini"],
-                corrected: "Je mange à l'école.",
-                explanation: "Après la préposition 'à', il faut utiliser l'article défini contracté 'à l'' devant 'école'."
+                corrected: "Je suis allée chez ma mère."
             },
             "Il est une belle fille.": {
-                errors: ["Incohérence pronom-nom : 'Il' (masculin) ne peut pas référer à 'une fille' (féminin)"],
-                corrected: "Elle est une belle fille.",
-                explanation: "Le pronom doit s'accorder en genre avec le nom : 'fille' est féminin, donc 'elle'."
+                errors: [
+                    {
+                        type: "Accord du sujet",
+                        original: "Il est une belle fille.",
+                        corrected: "Elle est une belle fille.",
+                        explanation: "Le pronom doit s'accorder avec le genre du sujet. 'Fille' est féminin, donc 'elle' et non 'il'.",
+                        errorType: "Il → Elle",
+                        position: {start: 0, end: 2}
+                    }
+                ],
+                corrected: "Elle est une belle fille."
+            },
+            "Nous mange à la cantine.": {
+                errors: [
+                    {
+                        type: "Conjugaison verbe",
+                        original: "Nous mange à la cantine.",
+                        corrected: "Nous mangeons à la cantine.",
+                        explanation: "Le verbe doit être conjugué à la première personne du pluriel avec 'nous'.",
+                        errorType: "mange → mangeons",
+                        position: {start: 5, end: 10}
+                    }
+                ],
+                corrected: "Nous mangeons à la cantine."
+            },
+            "Les chat sont mignon.": {
+                errors: [
+                    {
+                        type: "Accord pluriel",
+                        original: "Les chat sont mignon.",
+                        corrected: "Les chats sont mignons.",
+                        explanation: "Les noms et adjectifs doivent s'accorder en nombre avec l'article 'les' (pluriel).",
+                        errorType: "chat → chats, mignon → mignons",
+                        position: {start: 4, end: 8}
+                    }
+                ],
+                corrected: "Les chats sont mignons."
             }
         };
-        
+
         // Handle example selection
-        document.getElementById('exampleSelect').addEventListener('change', function() {
-            const selectedText = this.value;
-            if (selectedText) {
-                document.getElementById('textInput').value = selectedText;
+        document.getElementById('example-select').addEventListener('change', function() {
+            const selectedValue = this.value;
+            if (selectedValue) {
+                // Extract just the sentence part (before the parentheses)
+                const sentence = selectedValue.split(' (')[0];
+                document.getElementById('text-input').value = sentence;
             }
         });
-        
+
         function analyzeText() {
-            const text = document.getElementById('textInput').value.trim();
-            const gender = document.getElementById('genderSelect').value;
-            const resultDiv = document.getElementById('textResult');
-            const contentDiv = document.getElementById('analysisContent');
-            
-            if (!text) {
-                contentDiv.innerHTML = '<p style="color: red;">Veuillez saisir du texte à analyser.</p>';
-                resultDiv.style.display = 'block';
+            const inputText = document.getElementById('text-input').value.trim();
+            const gender = document.getElementById('speaker-gender').value;
+
+            if (!inputText) {
+                alert('Veuillez entrer un texte à analyser.');
                 return;
             }
+
+            // Find matching rule or create default response
+            const rule = grammarRules[inputText] || createDefaultRule(inputText);
             
-            // Check if text matches a known error pattern
-            const errorData = grammarErrors[text];
-            
-            if (errorData) {
-                // Get the correct form based on gender
-                const correctedText = errorData.getCorrected ? errorData.getCorrected(gender) : errorData.corrected;
+            // Adjust for gender if needed
+            const adjustedRule = adjustForGender(rule, gender, inputText);
+
+            displayResults(inputText, adjustedRule, gender);
+        }
+
+        function createDefaultRule(text) {
+            return {
+                errors: [],
+                corrected: text
+            };
+        }
+
+        function adjustForGender(rule, gender, originalText) {
+            if (originalText === "Je suis aller chez mon mère." && gender === "masculin") {
+                return {
+                    errors: [
+                        {
+                            type: "Accord du participe passé",
+                            original: "Je suis aller chez mon mère.",
+                            corrected: "Je suis allé chez ma mère.",
+                            explanation: "Le participe passé avec 'être' s'accorde avec le sujet masculin. 'Mère' est féminin, donc 'ma' et non 'mon'.",
+                            errorType: "aller → allé",
+                            position: {start: 8, end: 13}
+                        },
+                        {
+                            type: "Accord de genre",
+                            original: "Je suis aller chez mon mère.",
+                            corrected: "Je suis allé chez ma mère.",
+                            explanation: "Le participe passé avec 'être' s'accorde avec le sujet masculin. 'Mère' est féminin, donc 'ma' et non 'mon'.",
+                            errorType: "mon mère → ma mère",
+                            position: {start: 19, end: 28}
+                        }
+                    ],
+                    corrected: "Je suis allé chez ma mère."
+                };
+            }
+            return rule;
+        }
+
+        function displayResults(originalText, rule, gender) {
+            const resultsSection = document.getElementById('results');
+            const transcription = document.getElementById('transcription');
+            const selectedGender = document.getElementById('selected-gender');
+            const errorCount = document.getElementById('error-count');
+            const correctedText = document.getElementById('corrected-text');
+            const errorsDropdown = document.getElementById('errors-dropdown');
+            const errorsSummary = document.getElementById('errors-summary');
+            const errorList = document.getElementById('error-list');
+            const errorsTable = document.getElementById('errors-tbody');
+
+            // Show results section
+            resultsSection.classList.remove('hidden');
+
+            // Fill basic info
+            transcription.textContent = `"${originalText}"`;
+            selectedGender.textContent = gender;
+            errorCount.textContent = rule.errors.length;
+            correctedText.textContent = rule.corrected;
+
+            // Update errors dropdown
+            if (rule.errors.length > 0) {
+                errorsDropdown.style.display = 'block';
+                errorsSummary.textContent = `Erreurs détectées : ${rule.errors.length}`;
                 
-                // Display detailed error analysis
-                let errorRows = '';
-                errorData.errors.forEach((error, index) => {
-                    errorRows += `
-                        <tr>
-                            <td>${index + 1}</td>
-                            <td class="error-text">${text}</td>
-                            <td class="corrected-text">${correctedText}</td>
-                            <td>${error}</td>
-                            <td>${errorData.explanation}</td>
-                        </tr>
-                    `;
+                // Create error list for dropdown
+                errorList.innerHTML = '';
+                rule.errors.forEach((error, index) => {
+                    const errorItem = document.createElement('div');
+                    errorItem.className = 'error-item';
+                    errorItem.textContent = `${index + 1}. ${error.type} : ${error.errorType}`;
+                    errorList.appendChild(errorItem);
                 });
-                
-                contentDiv.innerHTML = `
-                    <p><strong>Transcription :</strong> "${text}"</p>
-                    <p><strong>Genre sélectionné :</strong> ${gender}</p>
-                    <p><strong>Erreurs détectées :</strong> ${errorData.errors.length}</p>
-                    <p><strong>Texte corrigé :</strong> <span class="corrected-text">${correctedText}</span></p>
-                    
-                    <table class="error-table">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Phrase Originale</th>
-                                <th>Phrase Corrigée</th>
-                                <th>Erreur Identifiée</th>
-                                <th>Explication</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${errorRows}
-                        </tbody>
-                    </table>
-                `;
             } else {
-                // No specific errors found - general analysis
-                const wordCount = text.split(/\s+/).length;
-                const charCount = text.length;
-                
-                contentDiv.innerHTML = `
-                    <p><strong>Transcription :</strong> "${text}"</p>
-                    <p><strong>Genre sélectionné :</strong> ${gender}</p>
-                    <p><strong>Nombre de mots :</strong> ${wordCount}</p>
-                    <p><strong>Nombre de caractères :</strong> ${charCount}</p>
-                    <p><strong>Statut :</strong> <span class="corrected-text">Aucune erreur détectée. Excellent travail !</span></p>
-                    
-                    <table class="error-table">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Phrase Originale</th>
-                                <th>Phrase Corrigée</th>
-                                <th>Erreur Identifiée</th>
-                                <th>Explication</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>${text}</td>
-                                <td class="corrected-text">${text}</td>
-                                <td>Aucune erreur détectée</td>
-                                <td>La phrase est grammaticalement correcte selon les règles françaises standard.</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                `;
+                errorsDropdown.style.display = 'none';
             }
-            
-            resultDiv.style.display = 'block';
+
+            // Fill errors table
+            errorsTable.innerHTML = '';
+            if (rule.errors.length > 0) {
+                rule.errors.forEach((error, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td><span class="original-text">${error.original}</span></td>
+                        <td><span class="corrected-text-table">${error.corrected}</span></td>
+                        <td>${error.errorType}</td>
+                        <td>${error.explanation}</td>
+                    `;
+                    errorsTable.appendChild(row);
+                });
+                document.getElementById('errors-table').style.display = 'table';
+            } else {
+                document.getElementById('errors-table').style.display = 'none';
+            }
+
+            // Store corrected text for audio playback
+            window.currentCorrectedText = rule.corrected;
         }
-        
-        function analyzeAudio() {
-            const audioFile = document.getElementById('audioFile').files[0];
-            const gender = document.getElementById('audioGenderSelect').value;
-            const resultDiv = document.getElementById('audioResult');
-            const contentDiv = document.getElementById('audioContent');
-            
-            if (!audioFile) {
-                contentDiv.innerHTML = '<p style="color: red;">Veuillez sélectionner un fichier audio.</p>';
-                resultDiv.style.display = 'block';
+
+        function playCorrection() {
+            if (!window.currentCorrectedText) {
+                alert('Aucune correction à lire. Veuillez d\'abord analyser un texte.');
                 return;
             }
-            
-            // Simulate audio analysis
-            contentDiv.innerHTML = `
-                <p><strong>Fichier :</strong> ${audioFile.name}</p>
-                <p><strong>Taille :</strong> ${(audioFile.size / 1024).toFixed(2)} KB</p>
-                <p><strong>Type :</strong> ${audioFile.type}</p>
-                <p><strong>Genre du locuteur :</strong> ${gender}</p>
-                <p><strong>Transcription :</strong> [Transcription automatique en cours...]</p>
-                <p><strong>Accent détecté :</strong> Français standard</p>
+
+            // Use Web Speech API for French text-to-speech
+            if ('speechSynthesis' in window) {
+                // Cancel any ongoing speech
+                speechSynthesis.cancel();
+
+                const utterance = new SpeechSynthesisUtterance(window.currentCorrectedText);
+                utterance.lang = 'fr-FR';
+                utterance.rate = 0.9;
+                utterance.pitch = 1.0;
+                utterance.volume = 1.0;
+
+                // Try to find a French voice
+                const voices = speechSynthesis.getVoices();
+                const frenchVoice = voices.find(voice => 
+                    voice.lang.startsWith('fr') || 
+                    voice.name.toLowerCase().includes('french') ||
+                    voice.name.toLowerCase().includes('français')
+                );
                 
-                <table class="error-table">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Transcription</th>
-                            <th>Correction Suggérée</th>
-                            <th>Type d'Erreur</th>
-                            <th>Correction de Prononciation</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td colspan="4"><em>Analyse en cours... Veuillez patienter.</em></td>
-                        </tr>
-                    </tbody>
-                </table>
-            `;
-            
-            resultDiv.style.display = 'block';
+                if (frenchVoice) {
+                    utterance.voice = frenchVoice;
+                }
+
+                // Update button during speech
+                const playBtn = document.querySelector('.play-btn');
+                const originalText = playBtn.innerHTML;
+                
+                utterance.onstart = () => {
+                    playBtn.innerHTML = '🔊 Lecture en cours...';
+                    playBtn.disabled = true;
+                };
+
+                utterance.onend = () => {
+                    playBtn.innerHTML = originalText;
+                    playBtn.disabled = false;
+                };
+
+                utterance.onerror = () => {
+                    playBtn.innerHTML = originalText;
+                    playBtn.disabled = false;
+                    alert('Erreur lors de la lecture du texte. Vérifiez que votre navigateur supporte la synthèse vocale française.');
+                };
+
+                speechSynthesis.speak(utterance);
+            } else {
+                alert('Votre navigateur ne supporte pas la synthèse vocale.');
+            }
         }
+
+        // Load voices when they become available
+        speechSynthesis.onvoiceschanged = () => {
+            // Voices are now loaded
+        };
+
+        // Initialize with default analysis
+        window.addEventListener('load', () => {
+            analyzeText();
+        });
     </script>
 </body>
 </html>
