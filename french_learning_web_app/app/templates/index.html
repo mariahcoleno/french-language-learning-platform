@@ -190,11 +190,12 @@
             display: flex;
             align-items: center; /* Vertical centering of content */
             justify-content: center; /* Horizontal centering of content */
-            gap: 5px;
+            gap: 5px; /* Space between emoji and text */
             transition: background-color 0.2s ease;
-            white-space: nowrap;
-            min-width: 130px; /* Ensures space for "Lecture en cours..." */
-            flex-shrink: 0;
+            white-space: nowrap; /* Prevent text wrapping */
+            min-width: 160px; /* Ensures space for "Lecture en cours..." */
+            flex-shrink: 0; /* Prevent shrinking */
+            box-sizing: border-box; /* Ensure padding is included in width */
         }
 
         .play-btn:hover {
@@ -708,7 +709,7 @@
                 const originalText = playBtn.innerHTML;
                 
                 utterance.onstart = () => {
-                    playBtn.innerHTML = '🔊 Lecture en cours...';
+                    playBtn.innerHTML = '🔊 Lecture en course';
                     playBtn.disabled = true;
                 };
 
