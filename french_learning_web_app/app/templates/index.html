@@ -12,7 +12,7 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
@@ -38,6 +38,7 @@
             font-size: 2.5rem;
             margin-bottom: 10px;
             font-weight: 700;
+            font-family: inherit;
         }
 
         .header p {
@@ -58,6 +59,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            font-family: inherit;
         }
 
         .examples-grid {
@@ -149,6 +151,11 @@
             font-weight: 600;
             cursor: pointer;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .analyze-btn:hover {
@@ -172,30 +179,34 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+            width: 100%;
         }
 
         .results-header h3 {
             color: #2d3748;
             font-size: 1.5rem;
+            font-family: inherit;
         }
 
         .play-btn {
-            background: #38a169; /* Sets background color */
-            color: white; /* Sets text color */
+            background: #38a169;
+            color: white;
             border: none;
-            padding: 8px 16px; /* Adds internal spacing */
+            padding: 8px 16px;
             border-radius: 6px;
             font-size: 14px;
             cursor: pointer;
             display: flex;
-            align-items: center; /* Vertical centering of content */
-            justify-content: center; /* Horizontal centering of content */
-            gap: 5px; /* Space between emoji and text */
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
             transition: background-color 0.2s ease;
-            white-space: nowrap; /* Prevent text wrapping */
-            min-width: 160px; /* Ensures space for "Lecture en cours..." */
-            flex-shrink: 0; /* Prevent shrinking */
-            box-sizing: border-box; /* Ensure padding is included in width */
+            white-space: nowrap;
+            min-width: 180px;
+            width: 180px;
+            flex-shrink: 0;
+            box-sizing: border-box;
+            font-family: inherit;
         }
 
         .play-btn:hover {
@@ -340,7 +351,7 @@
             .main-content, .examples-section {
                 padding: 20px;
             }
-
+            
             .examples-grid {
                 grid-template-columns: 1fr;
             }
@@ -387,12 +398,12 @@
         <div class="main-content">
             <div class="input-section">
                 <div class="input-group">
-                    <label for="text-input">Entrez votre texte en français :</label>
+                    <label for="text-input">✏️ Entrez votre texte en français :</label>
                     <textarea id="text-input" placeholder="Écrivez votre texte ici...">Je vais à le marché.</textarea>
                 </div>
 
                 <div class="input-group">
-                    <label for="example-select">Sélectionnez une phrase d'exemple :</label>
+                    <label for="example-select">😊 Testez une phrase incorrecte :</label>
                     <select id="example-select">
                         <option value="">-- Choisissez un exemple --</option>
                         <option value="Je vais à le marché. (Contraction d'article)">Je vais à le marché. (Contraction d'article)</option>
@@ -405,43 +416,41 @@
                 </div>
 
                 <div class="input-group">
-                    <label for="speaker-gender">Genre du locuteur :</label>
+                    <label for="speaker-gender">👤 Genre du locuteur :</label>
                     <select id="speaker-gender">
                         <option value="féminin">Féminin</option>
                         <option value="masculin">Masculin</option>
                     </select>
                 </div>
 
-                <button class="analyze-btn" onclick="analyzeText()">Analyser</button>
+                <button class="analyze-btn" onclick="analyzeText()">🔍 Analyser</button>
             </div>
 
             <div id="results" class="results-section hidden">
                 <div class="results-header">
-                    <h3>Résultats de l'analyse :</h3>
-                    <button class="play-btn" onclick="playCorrection()">
-                        🔊 Écouter la correction
-                    </button>
+                    <h3>✨ Résultats de l'analyse :</h3>
+                    <button class="play-btn" onclick="playCorrection()">🔊 Écouter la correction</button>
                 </div>
                 
                 <div class="result-item">
-                    <div class="result-label">Transcription :</div>
+                    <div class="result-label">➰ Transcription :</div>
                     <div class="result-value" id="transcription"></div>
                 </div>
                 
                 <div class="result-item">
-                    <div class="result-label">Genre sélectionné :</div>
+                    <div class="result-label">👤 Genre sélectionné :</div>
                     <div class="result-value" id="selected-gender"></div>
                 </div>
                 
                 <div class="result-item">
                     <details class="errors-dropdown" id="errors-dropdown">
-                        <summary id="errors-summary">Erreurs détectées : 0</summary>
+                        <summary id="errors-summary">⚠️ Erreurs détectées : 0</summary>
                         <div class="error-list" id="error-list"></div>
                     </details>
                 </div>
                 
                 <div class="result-item">
-                    <div class="result-label">Texte corrigé :</div>
+                    <div class="result-label">✅ Texte corrigé :</div>
                     <div class="result-value corrected-text" id="corrected-text"></div>
                 </div>
 
@@ -557,7 +566,6 @@
         document.getElementById('example-select').addEventListener('change', function() {
             const selectedValue = this.value;
             if (selectedValue) {
-                // Extract just the sentence part (before the parentheses)
                 const sentence = selectedValue.split(' (')[0];
                 document.getElementById('text-input').value = sentence;
             }
@@ -572,10 +580,7 @@
                 return;
             }
 
-            // Find matching rule or create default response
             const rule = grammarRules[inputText] || createDefaultRule(inputText);
-            
-            // Adjust for gender if needed
             const adjustedRule = adjustForGender(rule, gender, inputText);
 
             displayResults(inputText, adjustedRule, gender);
@@ -625,21 +630,17 @@
             const errorList = document.getElementById('error-list');
             const errorsTable = document.getElementById('errors-tbody');
 
-            // Show results section
             resultsSection.classList.remove('hidden');
 
-            // Fill basic info
             transcription.textContent = `"${originalText}"`;
             selectedGender.textContent = gender;
             correctedText.textContent = rule.corrected;
 
-            // Update errors dropdown
-            errorsSummary.textContent = `Erreurs détectées : ${rule.errors.length}`;
+            errorsSummary.textContent = `⚠️ Erreurs détectées : ${rule.errors.length}`;
             
             if (rule.errors.length > 0) {
                 errorsDropdown.style.display = 'block';
                 
-                // Create error list for dropdown
                 errorList.innerHTML = '';
                 rule.errors.forEach((error, index) => {
                     const errorItem = document.createElement('div');
@@ -648,11 +649,10 @@
                     errorList.appendChild(errorItem);
                 });
             } else {
-                errorsDropdown.style.display = 'block'; // Still show it but with 0 errors
+                errorsDropdown.style.display = 'block';
                 errorList.innerHTML = '<div class="error-item">Aucune erreur détectée.</div>';
             }
 
-            // Fill errors table
             errorsTable.innerHTML = '';
             if (rule.errors.length > 0) {
                 rule.errors.forEach((error, index) => {
@@ -671,7 +671,6 @@
                 document.getElementById('errors-table').style.display = 'none';
             }
 
-            // Store corrected text for audio playback
             window.currentCorrectedText = rule.corrected;
         }
 
@@ -681,18 +680,14 @@
                 return;
             }
 
-            // Use Web Speech API for French text-to-speech
             if ('speechSynthesis' in window) {
-                // Cancel any ongoing speech
                 speechSynthesis.cancel();
-
                 const utterance = new SpeechSynthesisUtterance(window.currentCorrectedText);
                 utterance.lang = 'fr-FR';
                 utterance.rate = 0.9;
                 utterance.pitch = 1.0;
                 utterance.volume = 1.0;
 
-                // Try to find a French voice
                 const voices = speechSynthesis.getVoices();
                 const frenchVoice = voices.find(voice => 
                     voice.lang.startsWith('fr') || 
@@ -704,12 +699,11 @@
                     utterance.voice = frenchVoice;
                 }
 
-                // Update button during speech
                 const playBtn = document.querySelector('.play-btn');
-                const originalText = playBtn.innerHTML;
-                
+                const originalText = '🔊 Écouter la correction';
+
                 utterance.onstart = () => {
-                    playBtn.innerHTML = '🔊 Lecture en course';
+                    playBtn.innerHTML = '🔊 Lecture en cours';
                     playBtn.disabled = true;
                 };
 
@@ -730,15 +724,11 @@
             }
         }
 
-        // Load voices when they become available
-        speechSynthesis.onvoiceschanged = () => {
-            // Voices are now loaded
-        };
+        speechSynthesis.onvoiceschanged = () => {};
 
-        // Initialize with default analysis
-        window.addEventListener('load', () => {
+        window.onload = () => {
             analyzeText();
-        });
+        };
     </script>
 </body>
 </html>
