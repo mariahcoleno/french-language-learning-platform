@@ -1,8 +1,3 @@
-"""
-Flask web application for French language learning with grammar and pronunciation analysis, including proper use of French diacritical marks.
-Provides REST API endpoints for text and audio analysis with real-time feedback.
-"""
-
 import sys
 import os
 
@@ -13,13 +8,14 @@ from flask import Flask, render_template, request, jsonify, send_from_directory
 from src.analyze import FrenchAnalyzer
 
 # Initialize Flask app with custom static folder path
-app = Flask(__name__, static_folder=os.path.abspath('app/static'))
+app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__), 'static'))
+print(f"Static folder: {app.static_folder}")
 
 # Initialize French language analyzer
 analyzer = FrenchAnalyzer()
 
 # Configure upload directory for audio files
-app.config['UPLOAD_FOLDER'] = 'app/uploads'
+app.config['UPLOAD_FOLDER'] = os.path.join(os.path.dirname(__file__), 'uploads')
 
 # Sample sentences with common French grammar errors for testing/demo - Now in French with explanations
 PRELOADED_SENTENCES = [
