@@ -15,12 +15,12 @@ It analyzes both text input and spoken French audio with gender selection for gr
 #### Main Interface (Initial State)
 This screenshot displays the French language learning web app's main interface in its initial state, providing the core layout for user interaction. It includes the header, example errors, an empty text input field, audio upload options, and gender selection. 
 
-![GUI MainInterface](screenshots/FrenchLearningFeedbackPlatform_MainInterface.png)
+![GUI MainInterface](screenshots/main_interface_initial.png)
 
-#### Main Interface (Populated with Text Input)
+#### Main Interface (Populated with Input)
 This screenshot displays the French language learning web app's main interface with user input in the text field automatically filled in based on the example the user selected from the drop down, illustrating the app's readiness for analysis.
 
-![GUI TextInput](screenshots/FrenchLearningFeedbackPlatform_TextInput.png)
+![GUI MainInterfacePopulated](screenshots/main_interface_populated.png)
 
 #### Feedback Interface (Results Display) - French Text Analysis: Grammar Corrections
 After the user clicks the "Analyser" button, this section displays and dynamically extends the main interface to present the analysis results. It includes the transcription, corrected text, and a detailed error table. 
@@ -29,7 +29,7 @@ This example shows text analysis of the sentence "Je suis aller chez mon mère" 
 - Grammar Corrections: Detects errors such as incorrect past participle agreement ("aller" should be "allée" for feminine gender) and incorrect determiner agreement ("mon mère" should be "ma mère"), providing the corrected sentence.
 - French Explanations: Provides detailed explanations in French for each grammatical correction.
 
-![GUI TextInputResults](screenshots/FrenchLearningFeedbackPlatform_TextInputResults.png)
+![GUI TextInputResults](screenshots/text_input_results.png)
 
 #### Feedback Interface (Results Display) = French Audio Analysis: Grammar Corrections, Pronunciation Corrections, and Accent Detection
 This example shows audio analysis of the sentence "Je suis aller à école" demonstrating the system's multi-layered error detection:
