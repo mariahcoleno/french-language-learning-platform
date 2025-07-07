@@ -41,7 +41,7 @@ This example shows text analysis of the sentence "Je suis aller chez mon mère" 
 - `app/templates/index.html`: Provides the user interface with input fields for text or audio, buttons to trigger analysis, and a section to display feedback results.
 - `tests/test_language_tool.py`: Contains unit tests for grammar-checking functionality (using language_tool_python).
 - `requirements.txt`: Lists all Python dependencies required to run the web app.
-- `test.wav`: A sample audio file containing example input.
+- `input.wav`: A sample audio file containing example input.
 
 ### Requirements
 - Python 3.10 (required for compatibility with specific library versions, e.g., Whisper, as some libraries may have issues with the system default Python 3.13). Check your version with: `python3 --version`.
@@ -99,8 +99,7 @@ This example shows text analysis of the sentence "Je suis aller chez mon mère" 
 - Je vais à le marché.
 - Je suis aller chez mon mère.
 - Elle mange un pomme. 
-- `test.wav`: "Je suis aller a école."
-- `test2.wav`: "Nous sommes fatigues après la école."
+- `input.wav`: "Je suis aller a école."
 
 ### Project Structure
 - french-language-learning-platform/
@@ -121,8 +120,6 @@ This example shows text analysis of the sentence "Je suis aller chez mon mère" 
       - test_language_tool.py 
     - README.md
     - requirements.txt
-    - test.wav
-    - test2.wav
   - .gitignore
 
 ### Additional Notes
