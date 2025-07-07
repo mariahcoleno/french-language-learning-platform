@@ -1,11 +1,15 @@
 import sys
 import os
+import uuid
+import time
+import tempfile
 
 # Add parent directory to path for importing custom modules
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from flask import Flask, render_template, request, jsonify, send_from_directory
+from flask import Flask, render_template, request, jsonify, send_file
 from src.analyze import FrenchAnalyzer
+from gtts import gTTS
 
 # Initialize Flask app with custom static folder path
 app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__), 'static'))
@@ -17,7 +21,7 @@ analyzer = FrenchAnalyzer()
 # Configure upload directory for audio files
 app.config['UPLOAD_FOLDER'] = os.path.join(os.path.dirname(__file__), 'uploads')
 
-# Sample sentences with common French grammar errors for testing/demo - Now in French with explanations
+# Sample sentences with common French grammar errors for testing/demo
 PRELOADED_SENTENCES = [
     {
         "text": "Je vais à le marché.",
@@ -74,131 +78,178 @@ def index():
     """
     Renders the main page with preloaded sample sentences and French interface.
     """
-    return render_template('index.html', 
-                         sentences=PRELOADED_SENTENCES,
-                         interface=FRENCH_INTERFACE)
+    return render_template('index.html',
+                            sentences=PRELOADED_SENTENCES,
+                            interface=FRENCH_INTERFACE)
 
 @app.route('/analyze_audio', methods=['POST'])
 def analyze_audio():
     """
     Analyzes uploaded audio file for pronunciation and grammar errors.
-    
+
     Expected form data:
-    - audio: Audio file (WAV, MP3, etc.)
+    - audio: Audio file (.wav)
     - gender: 'masculine' or 'feminine' for grammar agreement
     - recruiter_mode: 'true' for demo mode with popup
-    
+
     Returns JSON with transcription, errors, corrections, and accent analysis.
     """
-    # Extract form parameters
     recruiter_mode = request.form.get('recruiter_mode') == 'true'
     gender = request.form.get('gender', 'masculine')
-    
-    # Validate audio file presence
+
+    # Convert gender to French and capitalize for display
+    display_gender = ""
+    if gender.lower() == "feminine":
+        display_gender = FRENCH_INTERFACE["gender_feminine"] # Uses "Féminin"
+    elif gender.lower() == "masculine":
+        display_gender = FRENCH_INTERFACE["gender_masculine"] # Uses "Masculin"
+    else:
+        display_gender = "Non spécifié" # Fallback, though your UI should prevent this.
+
     if 'audio' not in request.files:
         return jsonify({"error": FRENCH_INTERFACE["error_no_audio"]}), 400
-    
+
     audio = request.files['audio']
-    if audio.filename == '':
-        return jsonify({"error": FRENCH_INTERFACE["error_no_audio"]}), 400
-    
-    # Save uploaded audio file
-    filename = os.path.join(app.config['UPLOAD_FOLDER'], 'input.wav')
+    if audio.filename == '' or not audio.filename.endswith('.wav'):
+        return jsonify({"error": "Seul le format .wav est accepté"}), 400
+
+    # Save audio file temporarily
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+    filename = os.path.join(app.config['UPLOAD_FOLDER'], f'input_{uuid.uuid4()}.wav')
     audio.save(filename)
-    
-    # Analyze audio using French analyzer
-    result = analyzer.analyze_speech(filename, gender=gender)
-    
-    # Prepare response with analysis results
-    response = {
-        "transcription": result["transcription"],
-        "errors": result["errors"],
-        "corrected_text": result["corrected_text"],
-        "accent": result["accent"],
-        "audio": result.get("audio_path"),
-        "pronunciation_corrections": result.get("pronunciation_corrections", []),
-        "recruiter_mode": recruiter_mode,
-        "interface": FRENCH_INTERFACE
-    }
-    
-    # Add demo popup message for recruiter mode
-    if recruiter_mode:
-        response["popup"] = FRENCH_INTERFACE["demo_popup"]
-    
-    return jsonify(response)
+
+    try:
+        # Analyze audio using French analyzer
+        result = analyzer.analyze_speech(filename, speaker_gender=gender)
+
+        response = {
+            "transcription": result["transcription"],
+            "errors": result["errors"],
+            "corrected_text": result["corrected_text"],
+            "accent": result["accent"],
+            "audio": result.get("audio_path"),
+            "pronunciation_corrections": result.get("pronunciation_corrections", []),
+            "recruiter_mode": recruiter_mode,
+            "interface": FRENCH_INTERFACE,
+            "display_gender": display_gender # Added for UI display
+        }
+
+        if recruiter_mode:
+            response["popup"] = FRENCH_INTERFACE["demo_popup"]
+
+        return jsonify(response)
+
+    finally:
+        # Clean up temporary file
+        if os.path.exists(filename):
+            os.remove(filename)
 
 @app.route('/analyze_text', methods=['POST'])
 def analyze_text():
     """
     Analyzes submitted text for French grammar errors.
-    
-    Expected form data:
+
+    Expected JSON data:
     - text: French text to analyze
     - gender: 'masculine' or 'feminine' for grammar agreement
     - recruiter_mode: 'true' for demo mode with popup
-    
+
     Returns JSON with original text, detected errors, and corrections.
     """
-    # Extract form parameters
-    recruiter_mode = request.form.get('recruiter_mode') == 'true'
-    gender = request.form.get('gender', 'masculine')
-    text = request.form.get('text', '')
-    
-    # Validate text input
+    data = request.get_json()
+    recruiter_mode = data.get('recruiter_mode', False)
+    gender = data.get('gender', 'masculine')
+    text = data.get('text', '')
+
+    # Convert gender to French and capitalize for display
+    display_gender = ""
+    if gender.lower() == "feminine":
+        display_gender = FRENCH_INTERFACE["gender_feminine"] # Uses "Féminin"
+    elif gender.lower() == "masculine":
+        display_gender = FRENCH_INTERFACE["gender_masculine"] # Uses "Masculin"
+    else:
+        display_gender = "Non spécifié" # Fallback
+
     if not text:
         return jsonify({"error": FRENCH_INTERFACE["error_no_text"]}), 400
-    
-    # Analyze text for grammar errors
-    errors, corrected_text = analyzer.analyze_text(text, gender=gender)
-    
-    # Structure analysis results
+
+    errors, corrected_text = analyzer.analyze_text(text, speaker_gender=gender)
+
     result = {
         "transcription": text,
         "errors": errors,
         "corrected_text": corrected_text,
-        "accent": "N/A",  # Not applicable for text analysis
-        "shap_values": None,
-        "audio_path": None,
-        "pronunciation_corrections": []
+        "accent": "N/A", # Accent is not determined for text analysis
+        "audio": None, # No audio for text analysis
+        "pronunciation_corrections": [] # No pronunciation corrections for text analysis
     }
-    
-    # Prepare consistent response format
+
     response = {
         "transcription": result["transcription"],
         "errors": result["errors"],
         "corrected_text": result["corrected_text"],
         "accent": result["accent"],
-        "audio": result.get("audio_path"),
-        "pronunciation_corrections": result.get("pronunciation_corrections", []),
+        "audio": result["audio"],
+        "pronunciation_corrections": result["pronunciation_corrections"],
         "recruiter_mode": recruiter_mode,
-        "interface": FRENCH_INTERFACE
+        "interface": FRENCH_INTERFACE,
+        "display_gender": display_gender # Added for UI display
     }
-    
-    # Add demo popup message for recruiter mode
+
     if recruiter_mode:
         response["popup"] = FRENCH_INTERFACE["demo_popup"]
-    
-    return render_template('index.html', 
-                     sentences=PRELOADED_SENTENCES,
-                     analysis_results=response,
-                     original_text=text,
-                     interface=FRENCH_INTERFACE)
+
+    return jsonify(response)
+
+@app.route('/tts', methods=['POST'])
+def text_to_speech():
+    """
+    Generates audio from text using gTTS.
+
+    Expected JSON data:
+    - text: Text to convert to speech
+    - lang: Language code (e.g., 'fr')
+    - gender: 'masculine' or 'feminine' (currently unused by gTTS)
+
+    Returns audio file as response.
+    """
+    data = request.get_json()
+    text = data.get('text', '')
+    lang = data.get('lang', 'fr')
+
+    if not text:
+        return jsonify({"error": "Aucun texte fourni pour la synthèse vocale"}), 400
+
+    try:
+        # Generate temporary audio file
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.mp3') as temp_file:
+            tts = gTTS(text=text, lang=lang, slow=False)
+            tts.save(temp_file.name)
+
+            # Send file and clean up
+            response = send_file(temp_file.name, mimetype='audio/mpeg')
+
+        # Schedule cleanup after response is sent
+        # Note: This os.remove might execute before send_file fully streams the file.
+        # For production, consider using a background task queue or Flask's after_request hook
+        # to ensure the file is served before deletion. For a small demo, this might be acceptable.
+        os.remove(temp_file.name)
+        return response
+
+    except Exception as e:
+        return jsonify({"error": f"Erreur lors de la génération audio : {str(e)}"}), 500
 
 @app.route('/static/<path:filename>')
 def serve_static(filename):
     """
     Serves static files (CSS, JS, images) with debugging information.
-    Custom route to handle static file serving with logging.
     """
     static_path = os.path.join(app.static_folder, filename)
     print(f"Serving file: {static_path}, Exists: {os.path.exists(static_path)}")
-    
+
     if os.path.exists(static_path):
-        return send_from_directory(app.static_folder, filename)
+        return send_file(static_path)
     return FRENCH_INTERFACE["file_not_found"], 404
 
 if __name__ == "__main__":
-    # Run Flask development server
-    # Host 0.0.0.0 allows external connections, port 5001 to avoid conflicts
     app.run(debug=True, host="0.0.0.0", port=5001)
