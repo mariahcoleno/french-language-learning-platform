@@ -1,6 +1,6 @@
 ## French Learning Web App
 This Flask-based web application is designed to help French learners improve their pronunciation, grammar, and proper use of French diacritical marks. 
-It analyzes both text input and spoken French audio, identifies errors, and provides personalized feedback using AI-powered tools like Whisper and gTTS.
+It analyzes both text input and spoken French audio with gender selection for grammar agreement analysis, identifies errors, and provides personalized feedback using AI-powered tools like Whisper and gTTS.
 
 ### Features
 - Audio file transcription with Whisper for uploaded WAV files
@@ -12,23 +12,27 @@ It analyzes both text input and spoken French audio, identifies errors, and prov
 - Gender-aware grammar corrections (e.g., past participle agreement for masculine or feminine gender)
 
 ### Screenshots
-#### Main Interface
-The French language learning web app's main interface provides feedback on pronunciation, grammar, and diacritical marks through text input and audio upload functionality, with gender selection for grammar agreement analysis.
+#### Main Interface (Initial State)
+This screenshot displays the French language learning web app's main interface in its initial state, providing the core layout for user interaction. It includes the header, example errors, an empty text input field, audio upload options, and gender selection. 
 
 ![GUI MainInterface](screenshots/FrenchLearningFeedbackPlatform_MainInterface.png)
 
-#### French Text Analysis: Grammar Corrections
-This French language learning web app provides comprehensive feedback from text input. 
-The example shows analysis of the sentence "Je suis aller chez mon mère" demonstrating the system's multi-layered error detection:
+#### Main Interface (Populated with Text Input)
+This screenshot displays the French language learning web app's main interface with user input in the text field automatically filled in based on the example the user selected from the drop down, illustrating the app's readiness for analysis.
+
+![GUI TextInput](screenshots/FrenchLearningFeedbackPlatform_TextInput.png)
+
+#### Feedback Interface (Results Display) - French Text Analysis: Grammar Corrections
+After the user clicks the "Analyser" button, this section displays and dynamically extends the main interface to present the analysis results. It includes the transcription, corrected text, and a detailed error table. 
+
+This example shows text analysis of the sentence "Je suis aller chez mon mère" demonstrating the system's multi-layered error detection:
 - Grammar Corrections: Detects errors such as incorrect past participle agreement ("aller" should be "allée" for feminine gender) and incorrect determiner agreement ("mon mère" should be "ma mère"), providing the corrected sentence.
 - French Explanations: Provides detailed explanations in French for each grammatical correction.
 
-![GUI TextInput](screenshots/FrenchLearningFeedbackPlatform_TextInput.png)
 ![GUI TextInputResults](screenshots/FrenchLearningFeedbackPlatform_TextInputResults.png)
 
-#### French Audio Analysis: Grammar Corrections, Pronunciation Corrections, and Accent Detection
-This French language learning web app provides comprehensive feedback from uploaded audio files.
-The example shows analysis of the sentence "Je suis aller à école" demonstrating the system's multi-layered error detection:
+#### Feedback Interface (Results Display) = French Audio Analysis: Grammar Corrections, Pronunciation Corrections, and Accent Detection
+This example shows audio analysis of the sentence "Je suis aller à école" demonstrating the system's multi-layered error detection:
 - Speech Recognition & Transcription: Converts uploaded audio (e.g., test.wav) to text, capturing the original spoken sentence.   
 - Grammar Corrections: Detects liaison errors ("a" should be "à l'" before vowel sounds) and past participle agreement issues ("aller" should be "allé" for masculine gender).
 - French Explanations: Provides detailed explanations in French for each grammatical correction.
