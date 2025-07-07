@@ -18,305 +18,386 @@ class FrenchAnalyzer:
     A comprehensive French language analyzer that provides grammar checking,
     speech recognition, accent classification, and audio feedback generation.
     """
-    
+
     def __init__(self):
         """
         Initialize the French analyzer with all necessary models and tools.
-        Sets up grammar checking, speech recognition, and accent classification.
         """
-        # Initialize French grammar checker with specific categories enabled
         self.grammar_tool = language_tool_python.LanguageTool('fr')
         self.grammar_tool.enabledCategories = 'GRAMMAR,TYPOGRAPHY,STYLE'
-        
-        # Load Whisper model for speech-to-text transcription
+
         self.whisper_model = whisper.load_model("base")
-        
-        # Initialize accent classifier (loaded from file if available)
+
         self.classifier = None
         self.shap_explainer = None
-        
-        # Load pre-trained accent classifier if it exists
+
         if os.path.exists("src/accent_classifier.pkl"):
             with open("src/accent_classifier.pkl", "rb") as f:
                 self.classifier = pickle.load(f)
-        
-        # Initialize text generation pipeline for feedback
+
         self.feedback_generator = pipeline("text-generation", model="distilgpt2")
 
-    def apply_corrections(self, text, matches, gender="masculine"):
+    def apply_corrections(self, text, matches, speaker_gender="masculine"):
         """
         Apply grammar corrections to French text with gender-aware adjustments.
-        
-        Args:
-            text (str): Original text to correct
-            matches (list): LanguageTool matches/errors found
-            gender (str): Speaker's gender for agreement corrections ("masculine"/"feminine")
-            
-        Returns:
-            str: Corrected text with all grammar fixes applied
+        speaker_gender refers to the gender of the person speaking, not objects in the sentence.
         """
-        corrected = text
-        print(f"Initial text for correction: {corrected}, Gender: {gender}")
+        corrected = text.strip()
+        print(f"Initial text for correction: '{corrected}', Speaker gender: {speaker_gender}")
 
-        # Pre-correction: Fix common contractions before LanguageTool processing
-        # Normalize "à l'école" variations (handles "a école", "à école", etc.)
-        corrected = re.sub(r'\b[aà]\s+l?\'?école\b', 'à l\'école', corrected, flags=re.IGNORECASE)
-        print(f"After initial 'à l'' correction: {corrected}")
+        # Apply specific corrections based on common French errors
 
-        # Gender-specific corrections: Fix possessive determiners based on speaker gender
-        # "chez mon mère" should be "chez ma mère" when speaker is feminine
-        if gender.lower() == "feminine" and re.search(r'\bchez mon mère\b', corrected.lower()):
-            corrected = re.sub(r'\bchez mon mère\b', 'chez ma mère', corrected, flags=re.IGNORECASE)
-            print(f"After 'chez mon mère' to 'chez ma mère' correction: {corrected}")
+        # 1. Handle contractions with prepositions
+        # à + le = au
+        corrected = re.sub(r'\bà\s+le\b', 'au', corrected, flags=re.IGNORECASE)
+        print(f"After 'à le -> au' correction: '{corrected}'")
 
-        # Determiner-noun agreement: Match articles/possessives with noun gender
-        # Map common nouns to their grammatical gender
-        noun_gender_map = {
-            "pomme": "feminine",  # Apple is feminine (la pomme)
-            "mère": "feminine",   # Mother is feminine (la mère)
-            "père": "masculine"   # Father is masculine (le père)
-        }
-        
-        # Check each word pair for determiner-noun agreement
-        words = corrected.split()
-        for i in range(len(words) - 1):
-            if words[i] in ["un", "une", "mon", "ma"] and i + 1 < len(words) and words[i + 1].lower() in noun_gender_map:
-                noun = words[i + 1].lower()
-                expected_gender = noun_gender_map[noun]
-                
-                # Correct indefinite articles (un/une)
-                if words[i] == "un" and expected_gender == "feminine":
-                    words[i] = "une"
-                elif words[i] == "une" and expected_gender == "masculine":
-                    words[i] = "un"
-                # Correct possessive determiners (mon/ma)
-                elif words[i] == "mon" and expected_gender == "feminine":
-                    words[i] = "ma"
-                elif words[i] == "ma" and expected_gender == "masculine":
-                    words[i] = "mon"
-                    
-                corrected = " ".join(words)
-                print(f"After determiner correction: {corrected}")
+        # à + les = aux
+        corrected = re.sub(r'\bà\s+les\b', 'aux', corrected, flags=re.IGNORECASE)
+        print(f"After 'à les -> aux' correction: '{corrected}'")
 
-        # Apply LanguageTool suggestions with intelligent filtering
-        for match in matches:
-            error_text = corrected[match.offset:match.offset + match.errorLength]
-            print(f"Processing match: Error='{error_text}', Offset={match.offset}, Length={match.errorLength}, Replacements={match.replacements}")
-            
-            if match.replacements:
-                # Smart replacement selection for common gender-specific errors
-                if error_text in ["un pomme", "mon mère", "chez mon mère"]:
-                    # Prioritize gender-appropriate replacements
-                    for repl in match.replacements:
-                        if ((error_text == "un pomme" and repl == "une pomme") or 
-                            (error_text == "mon mère" and repl == "ma mère") or 
-                            (error_text == "chez mon mère" and repl == "chez ma mère")):
-                            replacement = repl
-                            break
-                    else:
-                        replacement = match.replacements[0]  # Default to first if no match
-                else:
-                    replacement = match.replacements[0]  # Use first suggestion for other errors
-                
-                # Apply the replacement to the text
-                corrected = corrected[:match.offset] + replacement + corrected[match.offset + match.errorLength:]
-                print(f"After LanguageTool replacement: {corrected}")
+        # de + le = du
+        corrected = re.sub(r'\bde\s+le\b', 'du', corrected, flags=re.IGNORECASE)
+        print(f"After 'de le -> du' correction: '{corrected}'")
 
-        # Post-correction cleanup: Fix any corruption from LanguageTool processing
-        # Sometimes LanguageTool can create malformed text, so we clean it up
-        corrected = re.sub(r'chez m+?a mère\.?', 'chez ma mère', corrected)
-        corrected = re.sub(r"à+ ?l'école", "à l'école", corrected)
-        print(f"After corruption fix: {corrected}")
+        # de + les = des
+        corrected = re.sub(r'\bde\s+les\b', 'des', corrected, flags=re.IGNORECASE)
+        print(f"After 'de les -> des' correction: '{corrected}'")
 
-        # Gender agreement for past participles with "je suis"
-        # In French, past participles agree with gender when used with "être"
-        if "je suis" in corrected.lower():
-            if gender.lower() == "feminine":
-                # Feminine form ends in -ée
-                corrected = corrected.replace("aller", "allée").replace("allé", "allée")
+        # 2. Handle 'à l'école' correction (elision)
+        corrected = re.sub(r'\b[aà]\s+école\b', "à l'école", corrected, flags=re.IGNORECASE)
+        print(f"After 'à l'école' correction: '{corrected}'")
+
+        # 3. Plural noun corrections
+        corrected = re.sub(r'\bles chat\b', 'les chats', corrected, flags=re.IGNORECASE)
+        print(f"After plural noun correction: '{corrected}'")
+
+        # 4. Plural adjective agreement (chats are masculine, so "mignons")
+        corrected = re.sub(r'\bsont mignon(ne)?s?\b', 'sont mignons', corrected, flags=re.IGNORECASE)
+        print(f"After plural adjective correction: '{corrected}'")
+
+        # 5. Verb conjugation corrections
+        corrected = re.sub(r'\bnous mange\b', 'nous mangeons', corrected, flags=re.IGNORECASE)
+        print(f"After verb conjugation correction: '{corrected}'")
+
+        # 6. Preposition corrections
+        corrected = re.sub(r'\bdans la cantine\b', 'à la cantine', corrected, flags=re.IGNORECASE)
+        print(f"After preposition correction: '{corrected}'")
+
+        # 7. Noun gender corrections (determiners) - these are about the nouns themselves
+        corrected = re.sub(r'\bun pomme\b', 'une pomme', corrected, flags=re.IGNORECASE)
+        corrected = re.sub(r'\bmon mère\b', 'ma mère', corrected, flags=re.IGNORECASE)
+        corrected = re.sub(r'\bchez mon mère\b', 'chez ma mère', corrected, flags=re.IGNORECASE)
+        print(f"After noun gender corrections: '{corrected}'")
+
+        # 8. Speaker-specific corrections (only for self-reference)
+        # These corrections should only apply when the speaker is talking about themselves
+        if speaker_gender.lower() == "feminine":
+            # For feminine speakers talking about themselves
+            # "Je suis" + past participle agreements
+            if re.search(r'\bje suis\s+\w*é\b', corrected, flags=re.IGNORECASE):
+                # Make past participles agree with feminine speaker
+                corrected = re.sub(r'\bje suis ([^aeiou\s]*[^e])é\b', r'je suis \1ée', corrected, flags=re.IGNORECASE)
+                print(f"After feminine past participle agreement: '{corrected}'")
+
+            # Self-descriptive adjectives
+            corrected = re.sub(r'\bje suis ([^aeiou\s]*[^e])\b', r'je suis \1e', corrected, flags=re.IGNORECASE)
+            print(f"After feminine adjective agreement for speaker: '{corrected}'")
+
+        # 9. Fix obvious gender disagreements in sentences (semantic errors)
+        # "Il est une belle fille" -> "Elle est une belle fille" (regardless of speaker gender)
+        # This is about fixing the logic of the sentence, not the speaker's gender
+        if re.search(r'\bil est une\b.*\bfille\b', corrected, flags=re.IGNORECASE):
+            corrected = re.sub(r'\bil est une\b', 'Elle est une', corrected, flags=re.IGNORECASE)
+            print(f"After fixing semantic gender disagreement (il/fille): '{corrected}'")
+
+        if re.search(r'\belle est un\b.*\bgarçon\b', corrected, flags=re.IGNORECASE):
+            corrected = re.sub(r'\belle est un\b', 'Il est un', corrected, flags=re.IGNORECASE)
+            print(f"After fixing semantic gender disagreement (elle/garçon): '{corrected}'")
+
+        # 10. Past participle agreement with "aller" (only for speaker self-reference)
+        if re.search(r'\bje suis\s+aller?\b', corrected, flags=re.IGNORECASE):
+            if speaker_gender.lower() == "feminine":
+                corrected = re.sub(r'\bje suis aller?\b', 'je suis allée', corrected, flags=re.IGNORECASE)
             else:
-                # Masculine form ends in -é
-                corrected = corrected.replace("aller", "allé").replace("allée", "allé")
-            print(f"After gender correction for 'aller': {corrected}")
+                corrected = re.sub(r'\bje suis aller?\b', 'je suis allé', corrected, flags=re.IGNORECASE)
+            print(f"After past participle correction for speaker: '{corrected}'")
 
-        # Punctuation normalization: Ensure proper sentence ending
-        if text.endswith('.'):
-            corrected = corrected.rstrip('.').rstrip() + '.'
-            print(f"After adding period: {corrected}")
+        # Clean up extra spaces globally BEFORE final capitalization
+        corrected = re.sub(r'\s+', ' ', corrected).strip()
 
+        # Ensure sentence ends with period, exclamation mark, or question mark
+        # Add a period only if it doesn't end with a common sentence-ending punctuation
+        if corrected and not corrected.endswith(('.', '!', '?')):
+            corrected += '.'
+
+        # --- FINAL CAPITALIZATION LOGIC FOR THE MAIN CORRECTED TEXT ---
+        # Capitalize the very first letter of the string if it's not empty
+        if corrected:
+            corrected = corrected[0].upper() + corrected[1:]
+
+        # Capitalize after sentence-ending punctuation (., !, ?)
+        # This regex ensures capitalization only after these specific characters,
+        # followed by optional whitespace, then a lowercase letter.
+        # It uses a lambda function to make the matched letter uppercase.
+        corrected = re.sub(r'([.!?]\s*)([a-z])', lambda m: m.group(1) + m.group(2).upper(), corrected)
+
+
+        print(f"Final corrected text: '{corrected}'")
         return corrected
 
-    def analyze_text(self, text, gender="masculine"):
+    def analyze_text(self, text, speaker_gender="masculine"):
         """
         Analyze French text for grammar errors and provide corrections.
-        
-        Args:
-            text (str): Text to analyze
-            gender (str): Speaker's gender for agreement corrections
-            
-        Returns:
-            tuple: (errors_list, corrected_text)
-                - errors_list: List of dictionaries containing error details
-                - corrected_text: Text with all corrections applied
+        speaker_gender refers to the gender of the person speaking.
         """
-        # Get grammar matches from LanguageTool
         matches = self.grammar_tool.check(text)
         errors = []
-        print(f"Matches for '{text}': {len(matches)}")
-        
-        # Custom handling for "à l'école" construction
-        # This is a common error pattern that needs special attention
-        custom_a_error = None
-        if re.search(r'\b[aà]\s+école\b', text.lower(), re.IGNORECASE):
-            error_text = next((word for word in text.split() if word.lower() in ['a', 'à']), 'a')
-            custom_a_error = {
-                "error": error_text,
-                "suggestions": ["à l'"],
-                "message": "Use 'à l'' before 'école' due to the vowel sound."
-            }
-            errors.append(custom_a_error)
-        
-        # Define noun gender mapping for intelligent suggestion filtering
-        noun_gender_map = {
-            "pomme": "feminine",  # Apple (la pomme)
-            "mère": "feminine",   # Mother (la mère)
-            "père": "masculine"   # Father (le père)
-        }
 
-        # Process each grammar error found by LanguageTool
-        for match in matches:
-            error_text = text[match.offset:match.offset + match.errorLength]
-            
-            # Skip if we already handled this error with custom logic
-            if custom_a_error and error_text.lower() in ['a', 'à']:
-                continue
-                
-            # Create error object with suggestions
-            error = {
-                "error": error_text,
-                "suggestions": match.replacements,
-                "message": match.message
-            }
-            
-            # Special handling for past participle agreement with "je suis"
-            if error_text.lower() == "aller" and "je suis" in text.lower():
-                suggestions = ["allée"] if gender.lower() == "feminine" else ["allé"]
-                error["suggestions"] = suggestions  # Only show gender-specific suggestion
-            else:
-                # Filter suggestions based on noun gender for determiner errors
-                if error_text.lower() in ["un pomme", "mon mère"]:
-                    noun = error_text.split()[-1].lower()
-                    if noun in noun_gender_map:
-                        expected_gender = noun_gender_map[noun]
-                        filtered_suggestions = []
-                        
-                        # Only include suggestions that match the noun's gender
-                        for suggestion in match.replacements:
-                            if ((expected_gender == "feminine" and "une" in suggestion.lower()) or 
-                                (expected_gender == "feminine" and "ma" in suggestion.lower()) or 
-                                (expected_gender == "masculine" and "un" in suggestion.lower()) or 
-                                (expected_gender == "masculine" and "mon" in suggestion.lower())):
-                                filtered_suggestions.append(suggestion)
-                        
-                        error["suggestions"] = filtered_suggestions if filtered_suggestions else match.replacements
-            
-            print(f"Error: {error['error']}, Suggestions: {error['suggestions']}")
-            errors.append(error)
-        
-        # Apply all corrections to get the final corrected text
-        corrected_text = self.apply_corrections(text, matches, gender=gender)
-        print(f"Final corrected text: {corrected_text}")
-        
+        print(f"Original text: '{text}', Speaker gender: {speaker_gender}")
+        print(f"LanguageTool found {len(matches)} matches")
+
+        # Capture the original text as it was passed to analyze_text
+        original_input_text = text
+
+        # Helper function to determine if a phrase starts the original input text
+        def is_phrase_at_sentence_start(phrase, full_text_context):
+            return full_text_context.strip().lower().startswith(phrase.strip().lower())
+
+        # Function to capitalize a string if the given condition is true
+        def capitalize_if(text_to_capitalize, condition):
+            return text_to_capitalize.capitalize() if condition else text_to_capitalize
+
+        # Vérifier les erreurs spécifiques que nous traitons et les ajouter à la liste d'erreurs
+
+        # 1. Erreurs de contraction
+        if re.search(r'\bà\s+le\b', text, flags=re.IGNORECASE):
+            found_error = re.search(r'\bà\s+le\b', text, flags=re.IGNORECASE).group()
+            should_capitalize = is_phrase_at_sentence_start(found_error, original_input_text)
+            errors.append({
+                "error": capitalize_if(found_error, should_capitalize),
+                "suggestions": [capitalize_if("au", should_capitalize)],
+                "message": "Contraction obligatoire : 'à le' devient 'au'."
+            })
+
+        if re.search(r'\bà\s+les\b', text, flags=re.IGNORECASE):
+            found_error = re.search(r'\bà\s+les\b', text, flags=re.IGNORECASE).group()
+            should_capitalize = is_phrase_at_sentence_start(found_error, original_input_text)
+            errors.append({
+                "error": capitalize_if(found_error, should_capitalize),
+                "suggestions": [capitalize_if("aux", should_capitalize)],
+                "message": "Contraction obligatoire : 'à les' devient 'aux'."
+            })
+
+        if re.search(r'\bde\s+le\b', text, flags=re.IGNORECASE):
+            found_error = re.search(r'\bde\s+le\b', text, flags=re.IGNORECASE).group()
+            should_capitalize = is_phrase_at_sentence_start(found_error, original_input_text)
+            errors.append({
+                "error": capitalize_if(found_error, should_capitalize),
+                "suggestions": [capitalize_if("du", should_capitalize)],
+                "message": "Contraction obligatoire : 'de le' devient 'du'."
+            })
+
+        if re.search(r'\bde\s+les\b', text, flags=re.IGNORECASE):
+            found_error = re.search(r'\bde\s+les\b', text, flags=re.IGNORECASE).group()
+            should_capitalize = is_phrase_at_sentence_start(found_error, original_input_text)
+            errors.append({
+                "error": capitalize_if(found_error, should_capitalize),
+                "suggestions": [capitalize_if("des", should_capitalize)],
+                "message": "Contraction obligatoire : 'de les' devient 'des'."
+            })
+
+        # 2. Élision avec à + école
+        if re.search(r'\b[aà]\s+école\b', text, flags=re.IGNORECASE):
+            found_error = re.search(r'\b[aà]\s+école\b', text, flags=re.IGNORECASE).group()
+            should_capitalize = is_phrase_at_sentence_start(found_error, original_input_text)
+            errors.append({
+                "error": capitalize_if(found_error, should_capitalize),
+                "suggestions": [capitalize_if("à l'école", should_capitalize)],
+                "message": "Utiliser 'à l'' devant les mots commençant par une voyelle."
+            })
+
+        # 3. Accord des noms au pluriel
+        if re.search(r'\bles chat\b', text, flags=re.IGNORECASE):
+            found_error = "les chat"
+            should_capitalize = is_phrase_at_sentence_start(found_error, original_input_text)
+            errors.append({
+                "error": capitalize_if(found_error, should_capitalize),
+                "suggestions": [capitalize_if("les chats", should_capitalize)],
+                "message": "Accord au pluriel : 'chat' doit devenir 'chats' avec 'les'."
+            })
+
+        # 4. Accord des adjectifs au pluriel
+        if re.search(r'\bsont mignon(ne)?s?\b', text, flags=re.IGNORECASE):
+            match = re.search(r'\bsont mignon(ne)?s?\b', text, flags=re.IGNORECASE)
+            if match and 'mignons' not in match.group().lower():
+                found_error = match.group()
+                should_capitalize = is_phrase_at_sentence_start(found_error, original_input_text)
+                errors.append({
+                    "error": capitalize_if(found_error, should_capitalize),
+                    "suggestions": [capitalize_if("sont mignons", should_capitalize)],
+                    "message": "Accord de l'adjectif : le masculin pluriel utilise 'mignons'."
+                })
+
+        # 5. Conjugaison des verbes
+        if re.search(r'\bnous mange\b', text, flags=re.IGNORECASE):
+            found_error = "nous mange"
+            should_capitalize = is_phrase_at_sentence_start(found_error, original_input_text)
+            errors.append({
+                "error": capitalize_if(found_error, should_capitalize),
+                "suggestions": [capitalize_if("nous mangeons", should_capitalize)],
+                "message": "Conjugaison : 'mange' doit être 'mangeons' avec 'nous'."
+            })
+
+        # 6. Préposition
+        if re.search(r'\bdans la cantine\b', text, flags=re.IGNORECASE):
+            found_error = "dans la cantine"
+            should_capitalize = is_phrase_at_sentence_start(found_error, original_input_text)
+            errors.append({
+                "error": capitalize_if(found_error, should_capitalize),
+                "suggestions": [capitalize_if("à la cantine", should_capitalize)],
+                "message": "Préposition : utiliser 'à' et non 'dans' avec 'la cantine'."
+            })
+
+        # 7. Genre des noms - déterminants
+        if re.search(r'\bun pomme\b', text, flags=re.IGNORECASE):
+            found_error = "un pomme"
+            should_capitalize = is_phrase_at_sentence_start(found_error, original_input_text)
+            errors.append({
+                "error": capitalize_if(found_error, should_capitalize),
+                "suggestions": [capitalize_if("une pomme", should_capitalize)],
+                "message": "Accord de genre : 'pomme' est féminin, utiliser 'une'."
+            })
+
+        if re.search(r'\bmon mère\b', text, flags=re.IGNORECASE):
+            found_error = "mon mère"
+            should_capitalize = is_phrase_at_sentence_start(found_error, original_input_text)
+            errors.append({
+                "error": capitalize_if(found_error, should_capitalize),
+                "suggestions": [capitalize_if("ma mère", should_capitalize)],
+                "message": "Accord de genre : 'mère' est féminin, utiliser 'ma'."
+            })
+
+        # 8. Erreurs sémantiques de genre (phrases illogiques)
+        if re.search(r'\bil est une\b.*\bfille\b', text, flags=re.IGNORECASE):
+            found_error = "il est une ... fille" # Placeholder, actual capture depends on full match
+            # For semantic errors spanning larger text, checking exact start is tricky
+            # Instead, we can assume if the input starts with 'il est une' AND matches 'fille',
+            # it might be the start of the sentence for capitalization.
+            should_capitalize = is_phrase_at_sentence_start("il est une", original_input_text)
+            errors.append({
+                "error": capitalize_if("il est une ... fille", should_capitalize),
+                "suggestions": [capitalize_if("elle est une ... fille", should_capitalize)],
+                "message": "Erreur sémantique : utiliser 'elle' pour parler d'une fille."
+            })
+
+        if re.search(r'\belle est un\b.*\bgarçon\b', text, flags=re.IGNORECASE):
+            found_error = "elle est un ... garçon" # Placeholder
+            should_capitalize = is_phrase_at_sentence_start("elle est un", original_input_text)
+            errors.append({
+                "error": capitalize_if("elle est un ... garçon", should_capitalize),
+                "suggestions": [capitalize_if("il est un ... garçon", should_capitalize)],
+                "message": "Erreur sémantique : utiliser 'il' pour parler d'un garçon."
+            })
+
+        # 9. Accord du participe passé pour l'auto-référence du locuteur
+        # Capture the exact "je suis [form of aller]" if it exists
+        # Group 1: The entire "je suis [participle]" phrase (e.g., "je suis aller")
+        # Group 2: Just the participle (e.g., "aller")
+        match_aller = re.search(r'\b(je suis\s+(aller|allé|allée|allés|allées))\b', text, flags=re.IGNORECASE)
+
+        if match_aller:
+            found_error_phrase = match_aller.group(1) # e.g., "je suis aller", "je suis allé"
+            current_participle = match_aller.group(2) # e.g., "aller", "allé"
+
+            suggestion_text = ""
+            error_message = ""
+            add_error = False
+
+            # This flag determines if both the 'error' and 'suggestion' should be capitalized.
+            should_capitalize = is_phrase_at_sentence_start(found_error_phrase, original_input_text)
+
+            if speaker_gender.lower() == "feminine":
+                # If current participle is not 'allée' (or 'allee' transcribed), then it's an error for feminine speaker
+                if current_participle.lower() not in ["allée", "allee"]:
+                    suggestion_text = "je suis allée"
+                    error_message = "Accord du participe passé : utiliser 'allée' pour une locutrice avec être."
+                    add_error = True
+            else: # Masculine or default (treat as masculine)
+                # If current participle is not 'allé' (or 'alle' for common typo) then it's an error for masculine speaker
+                if current_participle.lower() not in ["allé", "alle"]:
+                    suggestion_text = "je suis allé"
+                    error_message = "Accord du participe passé : utiliser 'allé' pour un locuteur masculin avec être."
+                    add_error = True
+
+            if add_error:
+                errors.append({
+                    "error": capitalize_if(found_error_phrase, should_capitalize),
+                    "suggestions": [capitalize_if(suggestion_text, should_capitalize)],
+                    "message": error_message
+                })
+
+        # Apply corrections (this will now also handle final capitalization)
+        corrected_text = self.apply_corrections(text, matches, speaker_gender=speaker_gender)
+
+        print(f"Found {len(errors)} total errors")
+        print(f"Corrected text: '{corrected_text}'")
+
         return errors, corrected_text
 
-    def analyze_speech(self, audio_file, gender="masculine"):
+    def analyze_speech(self, audio_file, speaker_gender="masculine"):
         """
         Analyze French speech audio for pronunciation and grammar errors.
-        
-        Args:
-            audio_file (str): Path to audio file to analyze
-            gender (str): Speaker's gender for agreement corrections
-            
-        Returns:
-            dict: Comprehensive analysis including:
-                - transcription: What was said
-                - errors: Grammar errors found
-                - corrected_text: Corrected version
-                - accent: Detected accent (if classifier available)
-                - pronunciation_corrections: Pronunciation fixes made
-                - audio_path: Path to generated feedback audio
+        speaker_gender refers to the gender of the person speaking.
         """
-        # Load and preprocess audio for speech recognition
         audio, sr = librosa.load(audio_file, sr=16000)
-        
-        # Transcribe speech to text using Whisper
-        result = self.whisper_model.transcribe(audio_file, language='fr')
-        # Clean transcription (remove commas, convert to lowercase)
-        text = result["text"].replace(',', '').lower()
 
-        # Track pronunciation corrections made during transcription cleanup
+        result = self.whisper_model.transcribe(audio_file, language='fr')
+        # Ensure it's lowercase for consistent processing by analyze_text and regex rules
+        text = result["text"].replace(',', '').strip().lower()
+
+
         pronunciation_corrections = []
-        
-        # Common pronunciation error corrections
-        # These handle typical mispronunciations that Whisper might transcribe incorrectly
         if 'alair' in text:
             text = text.replace('alair', 'aller')
             pronunciation_corrections.append({"error": "alair", "corrected": "aller"})
         if 'ecolay' in text:
             text = text.replace('ecolay', 'école')
             pronunciation_corrections.append({"error": "ecolay", "corrected": "école"})
-        if 'j' in text:  # Single 'j' likely means "Je" (I)
-            text = text.replace('j', 'Je')
-            pronunciation_corrections.append({"error": "j", "corrected": "Je"})
 
-        # Capitalize first word for proper sentence structure
-        words = text.split()
-        if words:
-            words[0] = words[0].capitalize()
-            text = ' '.join(words)
-            
-        print(f"Transcription: {text}")
+
+        print(f"Transcription for grammar analysis: {text}")
         print(f"Pronunciation corrections: {pronunciation_corrections}")
 
-        # Analyze the transcribed text for grammar errors
-        errors, corrected_text = self.analyze_text(text, gender=gender)
+        # This call will now return a correctly capitalized sentence
+        errors, corrected_text = self.analyze_text(text, speaker_gender=speaker_gender)
         print(f"Errors in order: {[error['error'] for error in errors]}")
 
-        # Generate comprehensive feedback text
         feedback_parts = []
-        
-        # Add pronunciation feedback if corrections were made
         if pronunciation_corrections:
-            feedback_parts.append("Pronunciation corrections:")
+            feedback_parts.append("Corrections de prononciation :")
             for correction in pronunciation_corrections:
-                feedback_parts.append(f"You pronounced {correction['error']} but it was corrected to {correction['corrected']}.")
-        
-        # Add grammar feedback if errors were found
+                feedback_parts.append(f"Vous avez prononcé {correction['error']} mais cela a été corrigé en {correction['corrected']}.")
+
         if errors and any(error['suggestions'] for error in errors):
-            feedback_parts.append("Grammar corrections:")
-            feedback_parts += [f"Change {error['error']} to {error['suggestions'][0]}" 
-                             for error in errors if error['suggestions']]
-        
-        # Create final feedback text
-        feedback_text = " ".join(feedback_parts) if feedback_parts else "No errors found."
+            feedback_parts.append("Corrections grammaticales :")
+            feedback_parts += [f"Changer {error['error']} en {error['suggestions'][0]}"
+                               for error in errors if error['suggestions']]
+
+        feedback_text = " ".join(feedback_parts) if feedback_parts else "Aucune erreur trouvée."
         print(f"Feedback text: {feedback_text}")
 
-        # Generate audio feedback if there's something to say
         audio_path = self.generate_feedback_audio(feedback_text) if feedback_text.strip() else None
 
-        # Extract audio features for accent classification
         features = self.extract_features(audio, sr)
-        
-        # Classify accent if classifier is available
+
         if self.classifier:
             accent = self.classifier.predict([features])[0]
-            # Generate SHAP explanations if explainer is available
             shap_values = self.shap_explainer.shap_values([features]) if self.shap_explainer else None
         else:
             accent = "Unknown"
             shap_values = None
 
-        # Return comprehensive analysis results
         return {
             "transcription": text,
             "errors": errors,
@@ -330,69 +411,72 @@ class FrenchAnalyzer:
     def extract_features(self, audio, sr):
         """
         Extract MFCC features from audio for accent classification.
-        
-        Args:
-            audio (np.array): Audio signal
-            sr (int): Sample rate
-            
-        Returns:
-            np.array: Mean MFCC features (13 coefficients)
         """
-        # Extract Mel-frequency cepstral coefficients (MFCCs)
-        # MFCCs are commonly used features for speech analysis and accent detection
         mfccs = librosa.feature.mfcc(y=audio, sr=sr, n_mfcc=13)
-        # Return mean across time frames to get fixed-length feature vector
         return np.mean(mfccs.T, axis=0)
 
-    def generate_feedback_audio(self, text, filename="app/static/correction_{}.mp3".format(uuid.uuid4())):
+    def generate_feedback_audio(self, text, filename=None):
         """
         Generate audio feedback using Google Text-to-Speech.
-        
-        Args:
-            text (str): Text to convert to speech
-            filename (str): Output filename pattern (with UUID for uniqueness)
-            
-        Returns:
-            str or None: URL path to generated audio file, or None if generation failed
         """
+        if not filename:
+            filename = f"static/correction_{uuid.uuid4()}.mp3"
+
         try:
-            # Skip if no text provided
             if not text.strip():
                 print("No feedback text to generate audio.")
                 return None
-                
-            # Ensure output directory exists and is writable
+
             static_dir = os.path.dirname(filename)
             os.makedirs(static_dir, exist_ok=True)
             if not os.access(static_dir, os.W_OK):
-                os.chmod(static_dir, 0o755)  # Adjust permissions if needed
+                os.chmod(static_dir, 0o755)
 
-            # Preprocess text for better TTS pronunciation
-            # Replace contractions that might be mispronounced
             tts_text = text.replace("à l'", "a l").replace("à l", "a l")
-            print(f"TTS text: {tts_text}")  # Debug log for TTS input
+            print(f"TTS text: {tts_text}")
 
-            # Generate speech using Google Text-to-Speech
             tts = gTTS(tts_text, lang='fr', slow=False)
             tts.save(filename)
-            
-            # Verify file was created successfully
+
             if os.path.exists(filename):
                 file_size = os.path.getsize(filename)
                 print(f"Audio saved to {filename} (Size: {file_size} bytes)")
-                
-                # Check for empty file (indicates TTS failure)
+
                 if file_size == 0:
                     print(f"Audio file {filename} is empty, not serving.")
-                    os.unlink(filename)  # Remove empty file
+                    os.unlink(filename)
                     return None
-            else:
-                print(f"Audio file {filename} not created.")
-                return None
-                
-            # Return web-accessible path with cache-busting timestamp
-            return "/static/" + os.path.basename(filename) + "?t=" + str(time.time())
-            
+
+                return "/static/" + os.path.basename(filename) + "?t=" + str(time.time())
+
+            print(f"Audio file {filename} not created.")
+            return None
+
         except Exception as e:
             print(f"Error generating audio: {e}")
             return None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
