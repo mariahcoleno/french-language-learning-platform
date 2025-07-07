@@ -15,7 +15,7 @@ It analyzes both text input and spoken French audio, identifies errors, and prov
 #### Main Interface
 The French language learning web app's main interface provides feedback on pronunciation, grammar, and diacritical marks through text input and audio upload functionality, with gender selection for grammar agreement analysis.
 
-![GUI MainInterface](french_learning_web_app/screenshots/FrenchLearningFeedbackPlatform_MainInterface.png)
+![GUI MainInterface](screenshots/FrenchLearningFeedbackPlatform_MainInterface.png)
 
 #### French Text Analysis: Grammar Corrections
 This French language learning web app provides comprehensive feedback from text input. 
