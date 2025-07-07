@@ -15,7 +15,7 @@ It analyzes both text input and spoken French audio with gender selection for gr
 #### Main Interface (Initial State)
 This screenshot displays the French language learning web app's main interface in its initial state, providing the core layout for user interaction. It includes the header, example errors, an empty text input field, audio upload options, and gender selection. 
 
-![GUI MainInterface](screenshots/main_interface_initial.png)
+![GUI MainInterfaceInitial](screenshots/main_interface_initial.png)
 
 #### Main Interface (Populated with Input)
 This screenshot displays the French language learning web app's main interface with user input in the text field automatically filled in based on the example the user selected from the drop down, illustrating the app's readiness for analysis.
