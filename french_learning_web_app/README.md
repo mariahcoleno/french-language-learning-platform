@@ -15,7 +15,7 @@ It analyzes both text input and spoken French audio, identifies errors, and prov
 #### Main Interface
 The French language learning web app's main interface provides feedback on pronunciation, grammar, and diacritical marks through text input and audio upload functionality, with gender selection for grammar agreement analysis.
 
-![GUI Text 2](screenshots/FrenchLearningFeedbackPlatform_MainInterface.png)
+![GUI MainInterface](screenshots/FrenchLearningFeedbackPlatform_MainInterface.png)
 
 #### French Text Analysis: Grammar Corrections
 This French language learning web app provides comprehensive feedback from text input. 
@@ -23,8 +23,8 @@ The example shows analysis of the sentence "Je suis aller chez mon mère" demons
 - Grammar Corrections: Detects errors such as incorrect past participle agreement ("aller" should be "allée" for feminine gender) and incorrect determiner agreement ("mon mère" should be "ma mère"), providing the corrected sentence.
 - French Explanations: Provides detailed explanations in French for each grammatical correction.
 
-![GUI Text 4](screenshots/FrenchLearningFeedbackPlatform_TextInput.png)
-![GUI Text 5](screenshots/FrenchLearningFeedbackPlatform_TextInputResults.png)
+![GUI TextInput](screenshots/FrenchLearningFeedbackPlatform_TextInput.png)
+![GUI TextInputResults](screenshots/FrenchLearningFeedbackPlatform_TextInputResults.png)
 
 #### French Audio Analysis: Grammar Corrections, Pronunciation Corrections, and Accent Detection
 This French language learning web app provides comprehensive feedback from uploaded audio files.
