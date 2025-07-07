@@ -15,7 +15,7 @@ It analyzes both text input and spoken French audio, identifies errors, and prov
 #### Main Interface
 The French language learning web app's main interface provides feedback on pronunciation, grammar, and diacritical marks through text input and audio upload functionality, with gender selection for grammar agreement analysis.
 
-![GUI MainInterface](screenshots/FrenchLearningFeedbackPlatform_MainInterface.png)
+![GUI MainInterface](french_learning_web_app/screenshots/FrenchLearningFeedbackPlatform_MainInterface.png)
 
 #### French Text Analysis: Grammar Corrections
 This French language learning web app provides comprehensive feedback from text input. 
@@ -30,13 +30,9 @@ The example shows analysis of the sentence "Je suis aller chez mon mère" demons
 This French language learning web app provides comprehensive feedback from uploaded audio files.
 The example shows analysis of the sentence "Je suis aller à école" demonstrating the system's multi-layered error detection:
 - Speech Recognition & Transcription: Converts uploaded audio (test.wav) to text, capturing the original spoken sentence.   
-- Pronunciation Analysis: Identifies specific mispronunciations - "aller" spoken as "alair," "école" as "ecolay," and incorrect "J" pronunciation.
 - Grammar Corrections: Detects liaison errors ("a" should be "à l'" before vowel sounds) and past participle agreement issues ("aller" should be "allé").
 - French Explanations: Provides detailed explanations in French for each grammatical correction.
-- Audio Feedback: Generates French audio explanations of detected errors with integrated playback controls.
-- Accent Classification: Analyzes speech patterns to identify the speaker's accent (shown as "Unknown" in this example).
-
-![GUI Text 5](screenshots/FrenchLearningFeedbackEngine_Audio1.png)
+- Audio Feedback: Generates French audio of corrected sentence with integrated playback controls.
 
 ### Files
 - `src/analyze.py`: Processes audio or text input using Whisper for transcription and language_tool_python for grammar checks, generating personalized audio feedback with gTTS.
