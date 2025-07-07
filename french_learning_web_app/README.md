@@ -133,4 +133,6 @@ This example shows text analysis of the sentence "Je suis aller chez mon mère" 
 - All rights reserved. Contact colenomariah92@gmail.com for licensing inquiries.
 
 ### Development Notes
-- Application developed through iterative prompt engineering with AI tools (Claude/Grok) for rapid prototyping and learning.
+- Application developed through iterative prompt engineering with AI tools (Claude/Grok/Gemini/ChatGPT) for rapid prototyping and learning.
+- Images developed through iterative prompt engineeering with AI tools (ChatGPT) and GIMP.
+ 
