@@ -1,762 +1,885 @@
 <!DOCTYPE html>
-     <html lang="fr">
-     <head>
-         <meta charset="UTF-8">
-         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-         <title>Analyseur de Grammaire Française</title>
-         <style>
-             * {
-                 margin: 0;
-                 padding: 0;
-                 box-sizing: border-box;
-             }
-
-             body {
-                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
-                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                 min-height: 100vh;
-                 padding: 20px;
-             }
-
-             .container {
-                 max-width: 1200px;
-                 margin: 0 auto;
-                 background: white;
-                 border-radius: 15px;
-                 box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-                 overflow: hidden;
-             }
-
-             .header {
-                 background: linear-gradient(135deg, #000080 0%, #4169E1 100%);
-                 color: white;
-                 padding: 30px;
-                 text-align: center;
-             }
-
-             .header h1 {
-                 font-size: 2.5rem;
-                 margin-bottom: 10px;
-                 font-weight: 700;
-                 font-family: inherit;
-             }
-
-             .header p {
-                 opacity: 0.9;
-                 font-size: 1.1rem;
-             }
-
-             .examples-section {
-                 background: #f8f9ff;
-                 padding: 20px 30px;
-                 border-bottom: 1px solid #e1e5e9;
-             }
-
-             .examples-section h3 {
-                 color: #2d3748;
-                 margin-bottom: 15px;
-                 font-size: 1.2rem;
-                 display: flex;
-                 align-items: center;
-                 gap: 8px;
-                 font-family: inherit;
-             }
-
-             .examples-grid {
-                 display: grid;
-                 grid-template-columns: 1fr 1fr;
-                 gap: 15px;
-             }
-
-             .example-item {
-                 background: white;
-                 padding: 15px;
-                 border-radius: 8px;
-                 border-left: 4px solid #e53e3e;
-                 box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-             }
-
-             .example-item .incorrect {
-                 color: #e53e3e;
-                 font-weight: 500;
-                 margin-bottom: 5px;
-             }
-
-             .example-item .correct {
-                 color: #38a169;
-                 font-weight: 500;
-                 font-size: 0.9rem;
-             }
-
-             .main-content {
-                 padding: 30px;
-             }
-
-             .input-section {
-                 margin-bottom: 30px;
-             }
-
-             .input-group {
-                 margin-bottom: 20px;
-             }
-
-             label {
-                 display: block;
-                 margin-bottom: 8px;
-                 font-weight: 600;
-                 color: #2d3748;
-             }
-
-             textarea {
-                 width: 100%;
-                 min-height: 120px;
-                 padding: 15px;
-                 border: 2px solid #e2e8f0;
-                 border-radius: 8px;
-                 font-size: 16px;
-                 resize: vertical;
-                 transition: border-color 0.3s ease;
-             }
-
-             textarea:focus {
-                 outline: none;
-                 border-color: #4169E1;
-                 box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
-             }
-
-             select {
-                 width: 100%;
-                 padding: 12px 15px;
-                 border: 2px solid #e2e8f0;
-                 border-radius: 8px;
-                 font-size: 16px;
-                 background: white;
-                 cursor: pointer;
-                 transition: border-color 0.3s ease;
-             }
-
-             select:focus {
-                 outline: none;
-                 border-color: #4169E1;
-                 box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
-             }
-
-             .analyze-btn {
-                 background: linear-gradient(135deg, #000080 0%, #4169E1 100%);
-                 color: white;
-                 border: none;
-                 padding: 15px 30px;
-                 border-radius: 8px;
-                 font-size: 16px;
-                 font-weight: 600;
-                 cursor: pointer;
-                 transition: transform 0.2s ease, box-shadow 0.2s ease;
-                 font-family: inherit;
-                 display: flex;
-                 align-items: center;
-                 justify-content: center;
-                 gap: 8px;
-             }
-
-             .analyze-btn:hover {
-                 transform: translateY(-2px);
-                 box-shadow: 0 10px 25px rgba(79, 172, 254, 0.3);
-             }
-
-             .analyze-btn:active {
-                 transform: translateY(0);
-             }
-
-             .results-section {
-                 background: #f7fafc;
-                 border-radius: 10px;
-                 padding: 25px;
-                 margin-top: 30px;
-                 display: grid;
-                 grid-template-columns: 1fr 300px;
-                 gap: 20px;
-             }
-
-             .results-header {
-                 display: flex;
-                 justify-content: space-between;
-                 align-items: center;
-                 margin-bottom: 20px;
-                 grid-column: 1 / -1;
-             }
-
-             .results-header h3 {
-                 color: #2d3748;
-                 font-size: 1.5rem;
-                 font-family: inherit;
-             }
-
-             .play-btn {
-                 background: #38a169;
-                 color: white;
-                 border: none;
-                 padding: 8px 16px;
-                 border-radius: 6px;
-                 font-size: 14px;
-                 cursor: pointer;
-                 display: flex;
-                 align-items: center;
-                 justify-content: center;
-                 gap: 8px;
-                 transition: background-color 0.2s ease;
-                 white-space: nowrap;
-                 min-width: 180px;
-                 width: 180px;
-                 flex-shrink: 0;
-                 box-sizing: border-box;
-                 font-family: inherit;
-             }
-
-             .play-btn:hover {
-                 background: #2f855a;
-             }
-
-             .results-left {
-                 grid-column: 1;
-             }
-
-             .result-item {
-                 background: white;
-                 padding: 15px;
-                 border-radius: 8px;
-                 margin-bottom: 15px;
-                 border-left: 4px solid #4169E1;
-             }
-
-             .result-item:last-child {
-                 margin-bottom: 0;
-             }
-
-             .result-label {
-                 font-weight: 600;
-                 color: #2d3748;
-                 margin-bottom: 5px;
-             }
-
-             .result-value {
-                 color: #4a5568;
-             }
-
-             .corrected-text {
-                 color: #38a169;
-                 font-weight: 500;
-             }
-
-             .errors-dropdown {
-                 background: #fff5f5;
-                 border: 1px solid #fed7d7;
-                 border-radius: 6px;
-                 padding: 12px;
-                 margin-top: 10px;
-             }
-
-             .errors-dropdown summary {
-                 cursor: pointer;
-                 font-weight: 600;
-                 color: #e53e3e;
-                 list-style: none;
-                 display: flex;
-                 justify-content: space-between;
-                 align-items: center;
-             }
-
-             .errors-dropdown summary::-webkit-details-marker {
-                 display: none;
-             }
-
-             .errors-dropdown[open] summary::after {
-                 transform: rotate(180deg);
-             }
-
-             .errors-dropdown summary::after {
-                 content: '▼';
-                 transition: transform 0.2s ease;
-             }
-
-             .error-list {
-                 margin-top: 10px;
-                 padding-top: 10px;
-                 border-top: 1px solid #fed7d7;
-             }
-
-             .error-item {
-                 padding: 8px 0;
-                 color: #742a2a;
-                 font-size: 14px;
-             }
-
-             .error-item:not(:last-child) {
-                 border-bottom: 1px solid #fed7d7;
-                 margin-bottom: 8px;
-                 padding-bottom: 8px;
-             }
-
-             .errors-table {
-                 width: 100%;
-                 border-collapse: collapse;
-                 margin-top: 20px;
-                 background: white;
-                 border-radius: 8px;
-                 overflow: hidden;
-                 box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-             }
-
-             .errors-table th {
-                 background: #4169E1;
-                 color: white;
-                 padding: 15px 12px;
-                 text-align: left;
-                 font-weight: 600;
-             }
-
-             .errors-table td {
-                 padding: 15px 12px;
-                 border-bottom: 1px solid #e2e8f0;
-                 vertical-align: top;
-             }
-
-             .errors-table tr:last-child td {
-                 border-bottom: none;
-             }
-
-             .errors-table tr:nth-child(even) {
-                 background: #f7fafc;
-             }
-
-             .original-text {
-                 color: #e53e3e;
-                 font-weight: 500;
-             }
-
-             .corrected-text-table {
-                 color: #38a169;
-                 font-weight: 500;
-             }
-
-             .hidden {
-                 display: none;
-             }
-
-             .results-image {
-                 grid-column: 2;
-                 max-width: 300px;
-                 max-height: 450px;
-                 object-fit: contain;
-                 align-self: start;
-             }
-
-             @media (max-width: 768px) {
-                 .container {
-                     margin: 0 10px;
-                 }
-                 
-                 .header {
-                     padding: 20px;
-                 }
-                 
-                 .header h1 {
-                     font-size: 2rem;
-                 }
-                 
-                 .main-content, .examples-section {
-                     padding: 20px;
-                 }
-                 
-                 .examples-grid {
-                     grid-template-columns: 1fr;
-                 }
-                 
-                 .results-section {
-                     grid-template-columns: 1fr;
-                 }
-                 
-                 .results-left {
-                     grid-column: 1;
-                 }
-                 
-                 .results-image {
-                     grid-column: 1;
-                     grid-row: 2;
-                     max-width: 200px;
-                     max-height: 300px;
-                     margin: 0 auto;
-                 }
-                 
-                 .errors-table {
-                     font-size: 14px;
-                 }
-                 
-                 .errors-table th, .errors-table td {
-                     padding: 10px 8px;
-                 }
-             }
-         </style>
-     </head>
-     <body>
-         <div class="container">
-             <div class="header">
-                 <h1>🇫🇷 Analyseur de Grammaire Française</h1>
-                 <p>Analysez et corrigez vos textes français automatiquement</p>
-             </div>
-
-             <div class="examples-section">
-                 <h3>💡 Exemples d'erreurs courantes :</h3>
-                 <div class="examples-grid">
-                     <div class="example-item">
-                         <div class="incorrect">❌ Je mange à école.</div>
-                         <div class="correct">✅ Je mange à l'école.</div>
-                     </div>
-                     <div class="example-item">
-                         <div class="incorrect">❌ Mon mère est belle.</div>
-                         <div class="correct">✅ Ma mère est belle.</div>
-                     </div>
-                 </div>
-             </div>
-
-             <div class="main-content">
-                 <div class="input-section">
-                     <div class="input-group">
-                         <label for="text-input">✏️ Entrez votre texte en français :</label>
-                         <textarea id="text-input" placeholder="Écrivez votre texte ici...">Je vais à le marché.</textarea>
-                     </div>
-
-                     <div class="input-group">
-                         <label for="example-select">😊 Testez un texte francais incorrect :</label>
-                         <select id="example-select">
-                             <option value="">-- Choisissez un exemple --</option>
-                             <option value="Je vais à le marché. (Contraction d'article)">Je vais à le marché. (Contraction d'article)</option>
-                             <option value="Je suis aller chez mon mère. (Accord du participe passé + Accord de genre)">Je suis aller chez mon mère. (Accord du participe passé + Accord de genre)</option>
-                             <option value="Elle mange un pomme. (Accord de genre de l'article)">Elle mange un pomme. (Accord de genre de l'article)</option>
-                             <option value="Il est une belle fille. (Accord du sujet)">Il est une belle fille. (Accord du sujet)</option>
-                             <option value="Nous mange à la cantine. (Conjugaison du verbe)">Nous mange à la cantine. (Conjugaison du verbe)</option>
-                             <option value="Les chat sont mignon. (Accord du pluriel)">Les chat sont mignon. (Accord du pluriel)</option>
-                         </select>
-                     </div>
-
-                     <div class="input-group">
-                         <label for="speaker-gender"> Genre du locuteur :</label>
-                         <select id="speaker-gender">
-                             <option value="Féminin">Féminin</option>
-                             <option value="Masculin">Masculin</option>
-                         </select>
-                     </div>
-
-                     <button class="analyze-btn" onclick="analyzeText()">🔍 Analyser</button>
-                 </div>
-
-                 <div id="results" class="results-section hidden">
-                     <div class="results-header">
-                         <h3>✨ Résultats de l’analyse :</h3>
-                         <button class="play-btn" onclick="playCorrection()">🔊 Écouter la correction</button>
-                     </div>
-                     
-                     <div class="results-left">
-                         <div class="result-item">
-                             <div class="result-label">Transcription du texte francais :</div>
-                             <div class="result-value" id="transcription"></div>
-                         </div>
-                         
-                         <div class="result-item">
-                             <div class="result-label"> Genre sélectionné :</div>
-                             <div class="result-value" id="selected-gender"></div>
-                         </div>
-                         
-                         <div class="result-item">
-                             <details class="errors-dropdown" id="errors-dropdown">
-                                 <summary id="errors-summary">⚠️ Erreurs détectées : 0</summary>
-                                 <div class="error-list" id="error-list"></div>
-                             </details>
-                         </div>
-                         
-                         <div class="result-item">
-                             <div class="result-label">✅ Texte francais corrigé :</div>
-                             <div class="result-value corrected-text" id="corrected-text"></div>
-                         </div>
-
-                         <table class="errors-table" id="errors-table">
-                             <thead>
-                                 <tr>
-                                     <th>#</th>
-                                     <th>Phrase Originale</th>
-                                     <th>Phrase Corrigée</th>
-                                     <th>Erreur Identifiée</th>
-                                     <th>Explication</th>
-                                 </tr>
-                             </thead>
-                             <tbody id="errors-tbody">
-                             </tbody>
-                         </table>
-                     </div>
-                     <div class="results-image">
-                         <img src="{{ url_for('static', filename='images/french-girl-icon.png') }}" alt="French Girl Image" class="result-image">
-                     </div>
-                 </div>
-             </div>
-         </div>
-
-         <script>
-             // Sample data for grammar analysis
-             const grammarRules = {
-                 "Je vais à le marché.": {
-                     errors: [
-                         {
-                             type: "Contraction d'article",
-                             original: "Je vais à le marché.",
-                             corrected: "Je vais au marché.",
-                             explanation: "Les prépositions 'à' et 'de' se contractent avec l'article défini 'le' : à + le = au, de + le = du.",
-                             errorType: "à le → au",
-                             position: {start: 8, end: 13}
-                         }
-                     ],
-                     corrected: "Je vais au marché."
-                 },
-                 "Je suis aller chez mon mère.": {
-                     errors: [
-                         {
-                             type: "Accord du participe passé",
-                             original: "Je suis aller chez mon mère.",
-                             corrected: "Je suis allée chez ma mère.",
-                             explanation: "Le participe passé avec 'être' s'accorde avec le sujet. 'Mère' est féminin, donc 'ma' et non 'mon'.",
-                             errorType: "aller → allée",
-                             position: {start: 8, end: 13}
-                         },
-                         {
-                             type: "Accord de genre",
-                             original: "Je suis aller chez mon mère.",
-                             corrected: "Je suis allée chez ma mère.", 
-                             explanation: "Le participe passé avec 'être' s'accorde avec le sujet. 'Mère' est féminin, donc 'ma' et non 'mon'.",
-                             errorType: "mon mère → ma mère",
-                             position: {start: 19, end: 28}
-                         }
-                     ],
-                     corrected: "Je suis allée chez ma mère."
-                 },
-                 "Elle mange un pomme.": {
-                     errors: [
-                         {
-                             type: "Accord de genre de l'article",
-                             original: "Elle mange un pomme.",
-                             corrected: "Elle mange une pomme.",
-                             explanation: "Le nom 'pomme' est féminin, donc l'article indéfini doit être 'une' et non 'un'.",
-                             errorType: "un pomme → une pomme",
-                             position: {start: 11, end: 20}
-                         }
-                     ],
-                     corrected: "Elle mange une pomme."
-                 },
-                 "Il est une belle fille.": {
-                     errors: [
-                         {
-                             type: "Accord du sujet",
-                             original: "Il est une belle fille.",
-                             corrected: "Elle est une belle fille.",
-                             explanation: "Le pronom doit s'accorder avec le genre du sujet. 'Fille' est féminin, donc 'elle' et non 'il'.",
-                             errorType: "Il → Elle",
-                             position: {start: 0, end: 2}
-                         }
-                     ],
-                     corrected: "Elle est une belle fille."
-                 },
-                 "Nous mange à la cantine.": {
-                     errors: [
-                         {
-                             type: "Conjugaison du verbe",
-                             original: "Nous mange à la cantine.",
-                             corrected: "Nous mangeons à la cantine.",
-                             explanation: "Le verbe doit être conjugué à la première personne du pluriel avec 'nous'.",
-                             errorType: "mange → mangeons",
-                             position: {start: 5, end: 10}
-                         }
-                     ],
-                     corrected: "Nous mangeons à la cantine."
-                 },
-                 "Les chat sont mignon.": {
-                     errors: [
-                         {
-                             type: "Accord du pluriel",
-                             original: "Les chat sont mignon.",
-                             corrected: "Les chats sont mignons.",
-                             explanation: "Les noms et adjectifs doivent s'accorder en nombre avec l'article 'les' (pluriel).",
-                             errorType: "chat → chats, mignon → mignons",
-                             position: {start: 4, end: 8}
-                         }
-                     ],
-                     corrected: "Les chats sont mignons."
-                 }
-             };
-
-             // Handle example selection
-             document.getElementById('example-select').addEventListener('change', function() {
-                 const selectedValue = this.value;
-                 if (selectedValue) {
-                     const sentence = selectedValue.split(' (')[0];
-                     document.getElementById('text-input').value = sentence;
-                 }
-             });
-
-             function analyzeText() {
-                 const inputText = document.getElementById('text-input').value.trim();
-                 const gender = document.getElementById('speaker-gender').value;
-
-                 if (!inputText) {
-                     alert('Veuillez entrer un texte à analyser.');
-                     return;
-                 }
-
-                 const rule = grammarRules[inputText] || createDefaultRule(inputText);
-                 const adjustedRule = adjustForGender(rule, gender, inputText);
-
-                 displayResults(inputText, adjustedRule, gender);
-             }
-
-             function createDefaultRule(text) {
-                 return {
-                     errors: [],
-                     corrected: text
-                 };
-             }
-
-             function adjustForGender(rule, gender, originalText) {
-                 if (originalText === "Je suis aller chez mon mère." && gender === "masculin") {
-                     return {
-                         errors: [
-                             {
-                                 type: "Accord du participe passé",
-                                 original: "Je suis aller chez mon mère.",
-                                 corrected: "Je suis allé chez ma mère.",
-                                 explanation: "Le participe passé avec 'être' s'accorde avec le sujet masculin. 'Mère' est féminin, donc 'ma' et non 'mon'.",
-                                 errorType: "aller → allé",
-                                 position: {start: 8, end: 13}
-                             },
-                             {
-                                 type: "Accord de genre",
-                                 original: "Je suis aller chez mon mère.",
-                                 corrected: "Je suis allé chez ma mère.",
-                                 explanation: "Le participe passé avec 'être' s'accorde avec le sujet masculin. 'Mère' est féminin, donc 'ma' et non 'mon'.",
-                                 errorType: "mon mère → ma mère",
-                                 position: {start: 19, end: 28}
-                             }
-                         ],
-                         corrected: "Je suis allé chez ma mère."
-                     };
-                 }
-                 return rule;
-             }
-
-             function displayResults(originalText, rule, gender) {
-                 const resultsSection = document.getElementById('results');
-                 const transcription = document.getElementById('transcription');
-                 const selectedGender = document.getElementById('selected-gender');
-                 const correctedText = document.getElementById('corrected-text');
-                 const errorsDropdown = document.getElementById('errors-dropdown');
-                 const errorsSummary = document.getElementById('errors-summary');
-                 const errorList = document.getElementById('error-list');
-                 const errorsTable = document.getElementById('errors-tbody');
-
-                 resultsSection.classList.remove('hidden');
-
-                 transcription.textContent = `"${originalText}"`;
-                 selectedGender.textContent = gender;
-                 correctedText.textContent = rule.corrected;
-
-                 errorsSummary.textContent = `⚠️ Erreurs détectées : ${rule.errors.length}`;
-                 
-                 if (rule.errors.length > 0) {
-                     errorsDropdown.style.display = 'block';
-                     
-                     errorList.innerHTML = '';
-                     rule.errors.forEach((error, index) => {
-                         const errorItem = document.createElement('div');
-                         errorItem.className = 'error-item';
-                         errorItem.textContent = `${index + 1}. ${error.type} : ${error.errorType}`;
-                         errorList.appendChild(errorItem);
-                     });
-                 } else {
-                     errorsDropdown.style.display = 'block';
-                     errorList.innerHTML = '<div class="error-item">Aucune erreur détectée.</div>';
-                 }
-
-                 errorsTable.innerHTML = '';
-                 if (rule.errors.length > 0) {
-                     rule.errors.forEach((error, index) => {
-                         const row = document.createElement('tr');
-                         row.innerHTML = `
-                             <td>${index + 1}</td>
-                             <td><span class="original-text">${error.original}</span></td>
-                             <td><span class="corrected-text-table">${error.corrected}</span></td>
-                             <td>${error.errorType}</td>
-                             <td>${error.explanation}</td>
-                         `;
-                         errorsTable.appendChild(row);
-                     });
-                     document.getElementById('errors-table').style.display = 'table';
-                 } else {
-                     document.getElementById('errors-table').style.display = 'none';
-                 }
-
-                 window.currentCorrectedText = rule.corrected;
-             }
-
-             function playCorrection() {
-                 if (!window.currentCorrectedText) {
-                     alert('Aucune correction à lire. Veuillez d\'abord analyser un texte.');
-                     return;
-                 }
-
-                 if ('speechSynthesis' in window) {
-                     speechSynthesis.cancel();
-                     const utterance = new SpeechSynthesisUtterance(window.currentCorrectedText);
-                     utterance.lang = 'fr-FR';
-                     utterance.rate = 0.9;
-                     utterance.pitch = 1.0;
-                     utterance.volume = 1.0;
-
-                     const voices = speechSynthesis.getVoices();
-                     const frenchVoice = voices.find(voice => 
-                         voice.lang.startsWith('fr') || 
-                         voice.name.toLowerCase().includes('french') ||
-                         voice.name.toLowerCase().includes('français')
-                     );
-                     
-                     if (frenchVoice) {
-                         utterance.voice = frenchVoice;
-                     }
-
-                     const playBtn = document.querySelector('.play-btn');
-                     const originalText = '🔊 Écouter la correction';
-
-                     utterance.onstart = () => {
-                         playBtn.innerHTML = '🔊 Lecture en cours';
-                         playBtn.disabled = true;
-                     };
-
-                     utterance.onend = () => {
-                         playBtn.innerHTML = originalText;
-                         playBtn.disabled = false;
-                     };
-
-                     utterance.onerror = () => {
-                         playBtn.innerHTML = originalText;
-                         playBtn.disabled = false;
-                         alert('Erreur lors de la lecture du texte. Vérifiez que votre navigateur supporte la synthèse vocale française.');
-                     };
-
-                     speechSynthesis.speak(utterance);
-                 } else {
-                     alert('Votre navigateur ne supporte pas la synthèse vocale.');
-                 }
-             }
-
-             speechSynthesis.onvoiceschanged = () => {};
-
-             window.onload = () => {
-                 analyzeText();
-             };
-         </script>
-     </body>
-     </html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🇫🇷 Analyseur de Grammaire Française</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #000080 0%, #4169E1 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .examples-section {
+            background: #f8f9ff;
+            padding: 20px 30px;
+            border-bottom: 1px solid #e1e5e9;
+        }
+
+        .examples-section h3 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .examples-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .example-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #e53e3e;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .example-item .incorrect {
+            color: #e53e3e;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .example-item .correct {
+            color: #38a169;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .main-content {
+            padding: 30px;
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            resize: vertical;
+            transition: border-color 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #4169E1;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            background: white;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #4169E1;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+
+        .file-upload-label {
+            display: inline-block;
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px 15px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #2d3748;
+            cursor: pointer;
+            transition: border-color 0.3s ease, background-color 0.3s ease;
+        }
+
+        .file-upload-label:hover {
+            background: #edf2f7;
+            border-color: #4169E1;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .analyze-btn {
+            background: linear-gradient(135deg, #000080 0%, #4169E1 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .analyze-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(79, 172, 254, 0.3);
+        }
+
+        .analyze-btn:active {
+            transform: translateY(0);
+        }
+
+        .results-section {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 30px;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            align-items: start;
+            transition: opacity 0.9s ease;
+        }
+
+        .results-section.hidden {
+            opacity: 0;
+            padding: 0;
+            margin-top: 0;
+        }
+
+        .results-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0;
+            grid-column: 1 / -1;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .results-header h3 {
+            color: #2d3748;
+            font-size: 1.5rem;
+            margin-right: 10px;
+        }
+
+        .play-btn {
+            background: #38a169;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background-color 0.2s ease;
+            white-space: nowrap;
+            min-width: 180px;
+            width: 180px;
+            flex-shrink: 0;
+            box-sizing: border-box;
+        }
+
+        .play-btn:hover {
+            background: #2f855a;
+        }
+
+        .new-btn {
+            background: #4169E1;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background-color 0.2s ease;
+            white-space: nowrap;
+            min-width: 180px;
+            width: 180px;
+            flex-shrink: 0;
+            box-sizing: border-box;
+        }
+
+        .new-btn:hover {
+            background: #2b4ca1;
+        }
+
+        .results-left {
+            grid-column: 1;
+        }
+
+        .result-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border-left: 4px solid #4169E1;
+        }
+
+        .result-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .result-label {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+
+        .result-value {
+            color: #4a5568;
+        }
+
+        .corrected-text {
+            color: #38a169;
+            font-weight: 500;
+        }
+
+        .errors-dropdown {
+            background: #fff5f5;
+            border: 1px solid #fed7d7;
+            border-radius: 6px;
+            padding: 12px;
+            margin-top: 10px;
+        }
+
+        .errors-dropdown summary {
+            cursor: pointer;
+            font-weight: 600;
+            color: #e53e3e;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .errors-dropdown summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .errors-dropdown[open] summary::after {
+            transform: rotate(180deg);
+        }
+
+        .errors-dropdown summary::after {
+            content: '▼';
+            transition: transform 0.2s ease;
+        }
+
+        .error-list {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #fed7d7;
+        }
+
+        .error-item {
+            padding: 8px 0;
+            color: #742a2a;
+            font-size: 14px;
+        }
+
+        .error-item:not(:last-child) {
+            border-bottom: 1px solid #fed7d7;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+        }
+
+        .errors-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .errors-table th {
+            background: #4169E1;
+            color: white;
+            padding: 15px 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .errors-table td {
+            padding: 15px 12px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+
+        .errors-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .errors-table tr:nth-child(even) {
+            background: #f7fafc;
+        }
+
+        .original-text {
+            color: #e53e3e;
+            font-weight: 500;
+        }
+
+        .corrected-text-table {
+            color: #38a169;
+            font-weight: 500;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .results-image {
+            grid-column: 2;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            min-height: 0;
+        }
+
+        .result-image {
+            width: 100%;
+            max-width: 400px;
+            height: auto;
+            object-fit: contain;
+            image-rendering: auto;
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(65, 105, 225, 0.7); }
+            50% { box-shadow: 0 0 0 10px rgba(65, 105, 225, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(65, 105, 225, 0); }
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #4169E1;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        textarea.pulse {
+            animation: pulse 2s ease;
+        }
+
+        @media (max-width: 768px) {
+            .results-section {
+                grid-template-columns: 1fr; /* Stack vertically on mobile */
+                gap: 20px;
+                padding: 20px;
+            }
+
+            .results-image {
+                grid-column: 1;
+                grid-row: auto;
+                max-width: 200px;
+                max-height: 200px;
+                margin: 0 auto;
+                order: 2; /* Move image after content on mobile */
+            }
+
+            .results-left {
+                order: 1;
+            }
+
+            .errors-table {
+                font-size: 12px;
+            }
+
+            .errors-table th, .errors-table td {
+                padding: 8px 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🇫🇷 Analyseur de Grammaire Française</h1>
+            <p>Analysez et corrigez vos textes français automatiquement</p>
+        </div>
+
+        <div class="examples-section">
+            <h3>💡 Exemples d’erreurs courantes :</h3>
+            <div class="examples-grid">
+                <div class="example-item">
+                    <div class="incorrect">❌ Je mange à école.</div>
+                    <div class="correct">✅ Je mange à l’école.</div>
+                </div>
+                <div class="example-item">
+                    <div class="incorrect">❌ Mon mère est belle.</div>
+                    <div class="correct">✅ Ma mère est belle.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="input-section">
+                <div class="input-group">
+                    <label for="text-input">✏️ Entrez votre texte en français :</label>
+                    <textarea id="text-input" placeholder="Entrez votre texte français ici..."></textarea>
+                </div>
+
+                <div class="input-group">
+                    <label for="audio-upload">🎙️ Téléchargez un fichier audio (.wav) :</label>
+                    <label class="file-upload-label" for="audio-upload">Télécharger un fichier audio</label>
+                    <input type="file" id="audio-upload" accept=".wav">
+                    <span id="file-text">Aucun fichier sélectionné</span>
+                </div>
+
+                <div class="input-group">
+                    <label for="example-select">😊 Testez un texte français incorrect :</label>
+                    <select id="example-select">
+                        <option value="">-- Choisissez un exemple --</option>
+                        <option value="Je vais à le marché. (Contraction d'article)">Je vais à le marché. (Contraction d’article)</option>
+                        <option value="Je suis aller chez mon mère. (Accord du participe passé + Accord de genre)">Je suis aller chez mon mère. (Accord du participe passé + Accord de genre)</option>
+                        <option value="Elle mange un pomme. (Accord de genre de l'article)">Elle mange un pomme. (Accord de genre de l’article)</option>
+                        <option value="Il est une belle fille. (Accord du sujet)">Il est une belle fille. (Accord du sujet)</option>
+                        <option value="Nous mange dans la cantine. (Conjugaison du verbe + Accord de préposition)">Nous mange dans la cantine. (Conjugaison du verbe + Accord de préposition)</option>
+                        <option value="Les chat sont mignon. (Accord du pluriel)">Les chat sont mignon. (Accord du pluriel)</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="speaker-gender">Genre du locuteur :</label>
+                    <select id="speaker-gender">
+                        <option value="feminine">Féminin</option>
+                        <option value="masculine">Masculin</option>
+                    </select>
+                </div>
+
+                <button class="analyze-btn" onclick="analyzeText()">🔍 Analyser</button>
+            </div>
+
+            <div id="results" class="results-section hidden">
+                <div class="results-header">
+                    <h3>✨ Résultats de l’analyse :</h3>
+                    <button class="play-btn" onclick="playCorrection()">🔊 Écouter la correction</button>
+                    <button class="new-btn" onclick="newAnalysis()">➕ Nouvelle Analyse</button>
+                </div>
+
+                <div class="results-left">
+                    <div class="result-item">
+                        <div class="result-label">Transcription du texte français :</div>
+                        <div class="result-value" id="result-transcription"></div>
+                    </div>
+
+                    <div class="result-item">
+                        <div class="result-label">Genre sélectionné :</div>
+                        <div class="result-value" id="result-gender"></div>
+                    </div>
+
+                    <div class="result-item">
+                        <div class="result-label">✅ Texte français corrigé :</div>
+                        <div class="result-value corrected-text" id="result-corrected-text"></div>
+                    </div>
+
+                    <div class="result-item">
+                        <div class="result-label">⚠️ Erreurs détectées : <span id="error-count">0</span></div>
+                    </div>
+                    <table class="errors-table" id="errors-table">
+                        <thead>
+                            <tr>
+                                <th>Erreur</th>
+                                <th>Originale</th>
+                                <th>Corrigée</th>
+                                <th>Type d'Erreur</th>
+                            </tr>
+                        </thead>
+                        <tbody id="errors-tbody"></tbody>
+                    </table>
+                </div>
+                <div class="results-image">
+                    <img src="/static/images/french-girl-icon.png" alt="French Girl Image" class="result-image">
+                </div>
+            </div>
+        </div>
+        <div id="toast" class="toast">Formulaire réinitialisé !</div>
+    </div>
+
+    <script>
+        // Handle file upload display
+        document.getElementById('audio-upload').addEventListener('change', function() {
+            const file = this.files[0];
+            const fileTextSpan = document.getElementById('file-text');
+            const toast = document.getElementById('toast');
+
+            if (file) {
+                if (!file.name.endsWith('.wav')) {
+                    toast.textContent = 'Seuls les fichiers .wav sont acceptés.';
+                    toast.classList.add('show');
+                    setTimeout(() => toast.classList.remove('show'), 3000);
+                    fileTextSpan.textContent = 'Aucun fichier sélectionné';
+                    this.value = '';
+                    return;
+                }
+                fileTextSpan.textContent = file.name;
+            } else {
+                fileTextSpan.textContent = 'Aucun fichier sélectionné';
+            }
+        });
+
+        // Handle example selection
+        document.getElementById('example-select').addEventListener('change', function() {
+            const selectedValue = this.value;
+            if (selectedValue) {
+                const sentence = selectedValue.split(' (')[0];
+                document.getElementById('text-input').value = sentence;
+                document.getElementById('audio-upload').value = '';
+                document.getElementById('file-text').textContent = 'Aucun fichier sélectionné';
+            }
+        });
+
+        async function analyzeText() {
+            const textInput = document.getElementById('text-input').value.trim();
+            const audioInput = document.getElementById('audio-upload').files[0];
+            const gender = document.getElementById('speaker-gender').value.toLowerCase();
+            const toast = document.getElementById('toast');
+
+            if (!textInput && !audioInput) {
+                toast.textContent = 'Veuillez entrer un texte ou téléchargez un fichier audio à analyser.';
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 3000);
+                return;
+            }
+
+            try {
+                let response;
+                if (audioInput) {
+                    // Analyze audio (transcription + grammar analysis)
+                    const formData = new FormData();
+                    formData.append('audio', audioInput);
+                    formData.append('gender', gender);
+                    formData.append('recruiter_mode', 'false');
+
+                    response = await fetch('/analyze_audio', {
+                        method: 'POST',
+                        body: formData
+                    });
+                } else {
+                    // Analyze text
+                    response = await fetch('/analyze_text', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            text: textInput,
+                            gender: gender,
+                            recruiter_mode: 'false'
+                        })
+                    });
+                }
+
+                if (!response.ok) {
+                    throw new Error(`Erreur réseau : ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                if (result.error) {
+                    throw new Error(result.error);
+                }
+
+                displayResults(result);
+                toast.textContent = 'Analyse terminée !';
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 3000);
+
+                // Update textarea with transcription if audio was analyzed
+                if (audioInput) {
+                    document.getElementById('text-input').value = result.transcription;
+                }
+
+            } catch (error) {
+                console.error('Analysis error:', error);
+                toast.textContent = `Erreur lors de l'analyse : ${error.message}`;
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 3000);
+            }
+        }
+
+        function displayResults(result) {
+            const resultsSection = document.getElementById('results');
+            const transcription = document.getElementById('result-transcription');
+            const selectedGender = document.getElementById('result-gender');
+            const correctedText = document.getElementById('result-corrected-text');
+            const errorCount = document.getElementById('error-count');
+            const errorsTable = document.getElementById('errors-tbody');
+
+            resultsSection.classList.remove('hidden');
+
+            transcription.textContent = `${result.transcription}`;
+            selectedGender.textContent = result.display_gender; // THIS LINE WAS MODIFIED
+            correctedText.textContent = result.corrected_text;
+
+            // Update error count
+            errorCount.textContent = result.errors.length;
+
+            // Clear and populate errors table
+            errorsTable.innerHTML = '';
+
+            if (result.errors.length > 0) {
+                result.errors.forEach((error, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td><span class="original-text">${error.error}</span></td>
+                        <td><span class="corrected-text-table">${error.suggestions[0] || 'N/A'}</span></td>
+                        <td>${error.message}</td>
+                    `;
+                    errorsTable.appendChild(row);
+                });
+                document.getElementById('errors-table').style.display = 'table';
+            } else {
+                document.getElementById('errors-table').style.display = 'none';
+            }
+
+            window.currentCorrectedText = result.corrected_text;
+            window.currentAudioPath = result.audio;
+        }
+
+        async function playCorrection() {
+            if (!window.currentCorrectedText) {
+                const toast = document.getElementById('toast');
+                toast.textContent = 'Aucune correction à lire. Veuillez d’abord analyser un texte.';
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 3000);
+                return;
+            }
+
+            const playBtn = document.querySelector('.play-btn');
+            const originalText = '🔊 Écouter la correction';
+            const toast = document.getElementById('toast');
+
+            // Try gTTS first
+            try {
+                const response = await fetch('/tts', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        text: window.currentCorrectedText,
+                        lang: 'fr',
+                        gender: document.getElementById('speaker-gender').value.toLowerCase()
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Erreur réseau : ${response.statusText}`);
+                }
+
+                const audioBlob = await response.blob();
+                const audioUrl = URL.createObjectURL(audioBlob);
+                const audio = new Audio(audioUrl);
+
+                playBtn.innerHTML = '🔊 Lecture en cours';
+                playBtn.disabled = true;
+
+                audio.onended = () => {
+                    playBtn.innerHTML = originalText;
+                    playBtn.disabled = false;
+                    URL.revokeObjectURL(audioUrl);
+                };
+
+                audio.onerror = () => {
+                    playBtn.innerHTML = originalText;
+                    playBtn.disabled = false;
+                    toast.textContent = 'Erreur lors de la lecture de l’audio gTTS.';
+                    toast.classList.add('show');
+                    setTimeout(() => toast.classList.remove('show'), 3000);
+                    URL.revokeObjectURL(audioUrl);
+                    playWebSpeechFallback();
+                };
+
+                audio.play();
+            } catch (error) {
+                console.error('gTTS error:', error);
+                playBtn.innerHTML = originalText;
+                playBtn.disabled = false;
+                toast.textContent = `Erreur gTTS : ${error.message}. Tentative avec Web Speech API.`;
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 3000);
+                playWebSpeechFallback();
+            }
+        }
+
+        function playWebSpeechFallback() {
+            if ('speechSynthesis' in window) {
+                speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(window.currentCorrectedText);
+                utterance.lang = 'fr-FR';
+                utterance.rate = 0.9;
+                utterance.pitch = 1.0;
+                utterance.volume = 1.0;
+
+                const voices = speechSynthesis.getVoices();
+                const frenchVoice = voices.find(voice =>
+                    voice.lang.startsWith('fr') ||
+                    voice.name.toLowerCase().includes('french') ||
+                    voice.name.toLowerCase().includes('français')
+                );
+
+                if (frenchVoice) {
+                    utterance.voice = frenchVoice;
+                }
+
+                const playBtn = document.querySelector('.play-btn');
+                const originalText = '🔊 Écouter la correction';
+                const toast = document.getElementById('toast');
+
+                utterance.onstart = () => {
+                    playBtn.innerHTML = '🔊 Lecture en cours';
+                    playBtn.disabled = true;
+                };
+
+                utterance.onend = () => {
+                    playBtn.innerHTML = originalText;
+                    playBtn.disabled = false;
+                };
+
+                utterance.onerror = () => {
+                    playBtn.innerHTML = originalText;
+                    playBtn.disabled = false;
+                    toast.textContent = 'Erreur lors de la lecture avec Web Speech API.';
+                    toast.classList.add('show');
+                    setTimeout(() => toast.classList.remove('show'), 3000);
+                };
+
+                speechSynthesis.speak(utterance);
+            } else {
+                const toast = document.getElementById('toast');
+                toast.textContent = 'Votre navigateur ne supporte pas la synthèse vocale.';
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 3000);
+            }
+        }
+
+        function newAnalysis() {
+            const textInput = document.getElementById('text-input');
+            textInput.value = '';
+
+            const audioInput = document.getElementById('audio-upload');
+            audioInput.value = '';
+            document.getElementById('file-text').textContent = 'Aucun fichier sélectionné';
+
+            const exampleSelect = document.getElementById('example-select');
+            exampleSelect.value = '';
+
+            const speakerGender = document.getElementById('speaker-gender');
+            speakerGender.value = 'feminine';
+
+            const resultsSection = document.getElementById('results');
+            resultsSection.classList.add('hidden');
+            setTimeout(() => {
+                resultsSection.style.maxHeight = '';
+                resultsSection.style.opacity = '';
+            }, 900);
+
+            window.currentCorrectedText = null;
+            window.currentAudioPath = null;
+            document.getElementById('result-transcription').textContent = '';
+            document.getElementById('result-gender').textContent = '';
+            document.getElementById('result-corrected-text').textContent = '';
+            document.getElementById('error-count').textContent = '0';
+            document.getElementById('errors-tbody').innerHTML = '';
+            document.getElementById('errors-table').style.display = 'none';
+
+            const toast = document.getElementById('toast');
+            toast.textContent = 'Formulaire réinitialisé !';
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            textInput.classList.add('pulse');
+            textInput.focus();
+            setTimeout(() => textInput.classList.remove('pulse'), 2000);
+        }
+
+        speechSynthesis.onvoiceschanged = () => {};
+    </script>
+</body>
+</html>
+
