@@ -1,4 +1,6 @@
-# Virtual environment directories
+# Virtual environment directory (at repository root)
+/venv/
+
 # Exclude venv folders specifically within the main project directory
 # The leading slash ensures it matches from the root of the .gitignore's location.
 /nuansa-french-tutor/venv/
