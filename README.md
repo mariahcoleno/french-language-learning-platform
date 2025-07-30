@@ -42,8 +42,8 @@ This example shows text analysis of the sentence "Je suis aller chez mon mère" 
 ![GUI TextInputResults](screenshots/text_input_results.png)
 
 ### Files
-- `nuansa-french-tutor/app/main.py`: Manages the Flask application, handling routes for the homepage and analysis requests while serving static files lik$
-- `nuansa-french-tutor/app/templates/index.html`: Provides the user interface with input fields for text or audio, buttons to trigger analysis, and a sec$
+- `nuansa-french-tutor/app/main.py`: Manages the Flask application, handling routes for the homepage and analysis requests while serving static files like audio feedback.
+- `nuansa-french-tutor/app/templates/index.html`: Provides the user interface with input fields for text or audio, buttons to trigger analysis, and a section to display feedback results.
 - `nuansa-french-tutor/app/uploads/input.wav`: A sample audio file containing example input.
 - `nuansa-french-tutor/src/analyze.py`: Processes audio or text input using Whisper for transcription and language_tool_python for grammar checks, generating personalized audio feedback with gTTS.
 - `nuansa-french-tutor/tests/test_language_tool.py`: Contains unit tests for grammar-checking functionality (using language_tool_python).
@@ -129,7 +129,8 @@ This example shows text analysis of the sentence "Je suis aller chez mon mère" 
       - test_language_tool.py 
 
 ### Additional Notes
-- The app runs on port 5001 to avoid common port conflicts and ensure faster startup. Access it at http://127.0.0.1:5001 after starting the server. If you encounter issues, check for port conflicts with lsof -i :5001 or run on a different port by modifying nuansa-french-tutor/app/main.py (e.g., change port=5001 to port=5002 and access http://127.0.0.1:5002).
+- The app runs on port 5001 to avoid common port conflicts and ensure faster startup. Access it at http://127.0.0.1:5001 after starting the server. 
+If you encounter issues, check for port conflicts with lsof -i :5001 or run on a different port by modifying nuansa-french-tutor/app/main.py (e.g., change port=5001 to port=5002 and access http://127.0.0.1:5002).
 - The `nuansa-french-tutor/app/uploads/` directory is created automatically to store temporary uploaded files and does not need to be versioned.
 
 ### License
