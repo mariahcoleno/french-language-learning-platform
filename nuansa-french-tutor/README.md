@@ -1,8 +1,10 @@
-## French Learning Web App
-This Python, Flask-based web application is designed to help intermediate French learners looking to achieve fluency. 
-Specifically, this app is designed to help users significantly improve their grammar, including proper use of French diacritical marks, and pronunciation. 
-It analyzes both text input and spoken French audio, identifies errors, and provides personalized feedback using AI-powered tools like Whisper and gTTS.
-Users can select gender for accurate grammar agreement analysis.
+## Nuansa's AI-driven French Tutor
+This is the official repository for Nuansa's AI-driven French Tutor, an interactive Python, Flask-based web application meticulously designed to help intermediate French learners achieve fluency.
+The application focuses on significantly improving users' grammar, including the proper use of French diacritical marks, and pronunciation. 
+It provides real-time, personalized feedback by analyzing both text input and spoken French audio. 
+This is achieved through a robust combination of language_tool_python combined with custom regex patterns and logic for its rule-based systems.
+For a truly dynamic conversational experience, the application seamlessly integrates OpenAI Whisper for highly accurate speech-to-text (STT) transcription, enhanced by custom rules to correct phonetic misspellings (e.g., 'alair' to 'aller'), and gTTS (Google Text-to-Speech) for natural-sounding text-to-speech (TTS) responses. 
+Users can also select a specific gender for accurate grammar agreement analysis, enhancing the personalization of the feedback.
 
 ### Features
 - Audio file transcription with Whisper for uploaded WAV files
@@ -64,8 +66,8 @@ This example shows text analysis of the sentence "Je suis aller chez mon mère" 
 #### Option 1: From GitHub (First Time Setup)
 - **Note**
   - Start in your preferred directory (e.g., cd ~/Desktop/ or cd ~/Documents/). 
-1. Clone the repository: `git clone https://github.com/mariahcoleno/french-language-learning-platform.git`
-2. Navigate to the project directory: `cd french_learning_web_app/`
+1. Clone the repository: `git clone https://github.com/mariahcoleno/nuansa-french-tutor.git`
+2. Navigate to the project directory: `cd nuansa-french-tutor/`
 3. Create a virtual environment: `python3.10 -m venv venv`
 4. Activate the virtual environment: `source venv/bin/activate` # On Windows: venv\Scripts\activate
 5. (Optional) Upgrade tools: pip install `--upgrade pip setuptools wheel` 
@@ -76,7 +78,7 @@ This example shows text analysis of the sentence "Je suis aller chez mon mère" 
 7. Proceed to "Run the App" below.
 
 #### Option 2: Local Setup (Existing Repository)
-1. Navigate to your local repository (adjust path as needed): `cd ~/Documents/french-language-learning-platform/french_learning_web_app/`
+1. Navigate to your local repository (adjust path as needed): `cd ~/Documents/nuansa-french-tutor/nuansa-french-tutor/`
 2. Setup and activate a virtual environment:
    - If existing: `source venv/bin/activate` (adjust path if venv is elsewhere)
    - If new:
@@ -104,8 +106,8 @@ This example shows text analysis of the sentence "Je suis aller chez mon mère" 
 - `input.wav`: "Je suis aller a école."
 
 ### Project Structure
-- french-language-learning-platform/
-  - french_learning_web_app/
+- nuansa-french-tutor/
+  - nuansa-french-tutor/
     - app/
       - static/
         - audio/ (multiple correction files)
