@@ -1,8 +1,10 @@
 ## Nuansa's AI-driven French Tutor
 This is the official repository for Nuansa's AI-driven French Tutor, an interactive Python, Flask-based web application meticulously designed to help intermediate French learners achieve fluency.
+
 The application focuses on significantly improving users' grammar, including the proper use of French diacritical marks, and pronunciation. 
 It provides real-time, personalized feedback by analyzing both text input and spoken French audio. 
 This is achieved through a robust combination of language_tool_python combined with custom regex patterns and logic for its rule-based systems.
+
 For a truly dynamic conversational experience, the application seamlessly integrates OpenAI Whisper for highly accurate speech-to-text (STT) transcription, enhanced by custom rules to correct phonetic misspellings (e.g., 'alair' to 'aller'), and gTTS (Google Text-to-Speech) for natural-sounding text-to-speech (TTS) responses. 
 Users can also select a specific gender for accurate grammar agreement analysis, enhancing the personalization of the feedback.
 
@@ -16,12 +18,12 @@ Users can also select a specific gender for accurate grammar agreement analysis,
 
 ### Screenshots
 #### Main Interface (Initial State)
-This screenshot displays the French language learning web app's main interface in its initial state, providing the core layout for user interaction. It includes the header, example errors, an empty text input field, audio upload options, and gender selection. 
+This screenshot displays Nuance's AI-driven French Tutor's main interface in its initial state, providing the core layout for user interaction. It includes the header, example errors, an empty text input field, audio upload options, and gender selection. 
 
 ![GUI MainInterfaceInitial](screenshots/main_interface_initial.png)
 
 #### Main Interface (Populated with Input)
-This screenshot displays the French language learning web app's main interface with user input, illustrating the app's readiness for analysis.
+This screenshot displays Nuance's AI-driven French Tutor's main interface with user input, illustrating the app's readiness for analysis.
 
 ![GUI MainInterfacePopulated](screenshots/main_interface_populated.png)
 
@@ -40,12 +42,12 @@ This example shows text analysis of the sentence "Je suis aller chez mon mère" 
 ![GUI TextInputResults](screenshots/text_input_results.png)
 
 ### Files
-- `src/analyze.py`: Processes audio or text input using Whisper for transcription and language_tool_python for grammar checks, generating personalized audio feedback with gTTS.
-- `app/main.py`: Manages the Flask application, handling routes for the homepage and analysis requests while serving static files like audio feedback.
-- `app/templates/index.html`: Provides the user interface with input fields for text or audio, buttons to trigger analysis, and a section to display feedback results.
-- `tests/test_language_tool.py`: Contains unit tests for grammar-checking functionality (using language_tool_python).
+- `nuansa-french-tutor/app/main.py`: Manages the Flask application, handling routes for the homepage and analysis requests while serving static files lik$
+- `nuansa-french-tutor/app/templates/index.html`: Provides the user interface with input fields for text or audio, buttons to trigger analysis, and a sec$
+- `nuansa-french-tutor/app/uploads/input.wav`: A sample audio file containing example input.
+- `nuansa-french-tutor/src/analyze.py`: Processes audio or text input using Whisper for transcription and language_tool_python for grammar checks, generating personalized audio feedback with gTTS.
+- `nuansa-french-tutor/tests/test_language_tool.py`: Contains unit tests for grammar-checking functionality (using language_tool_python).
 - `requirements.txt`: Lists all Python dependencies required to run the web app.
-- `app/uploads/input.wav`: A sample audio file containing example input.
 
 ### Requirements
 - Python 3.10 (required for compatibility with specific library versions, e.g., Whisper, as some libraries may have issues with the system default Python 3.13). Check your version with: `python3 --version`.
@@ -64,10 +66,9 @@ This example shows text analysis of the sentence "Je suis aller chez mon mère" 
   
 ### Setup and Usage
 #### Option 1: From GitHub (First Time Setup)
-- **Note**
-  - Start in your preferred directory (e.g., cd ~/Desktop/ or cd ~/Documents/). 
+- **Note**: Start in your preferred directory (e.g., cd ~/Desktop/ or cd ~/Documents/). 
 1. Clone the repository: `git clone https://github.com/mariahcoleno/nuansa-french-tutor.git`
-2. Navigate to the project directory: `cd nuansa-french-tutor/`
+2. Navigate to the project's repository root directory: `cd nuansa-french-tutor/`
 3. Create a virtual environment: `python3.10 -m venv venv`
 4. Activate the virtual environment: `source venv/bin/activate` # On Windows: venv\Scripts\activate
 5. (Optional) Upgrade tools: pip install `--upgrade pip setuptools wheel` 
@@ -78,7 +79,7 @@ This example shows text analysis of the sentence "Je suis aller chez mon mère" 
 7. Proceed to "Run the App" below.
 
 #### Option 2: Local Setup (Existing Repository)
-1. Navigate to your local repository (adjust path as needed): `cd ~/Documents/nuansa-french-tutor/nuansa-french-tutor/`
+1. Navigate to your local repository root (adjust path as needed): `cd ~/Documents/nuansa-french-tutor/`
 2. Setup and activate a virtual environment:
    - If existing: `source venv/bin/activate` (adjust path if venv is elsewhere)
    - If new:
@@ -106,8 +107,13 @@ This example shows text analysis of the sentence "Je suis aller chez mon mère" 
 - `input.wav`: "Je suis aller a école."
 
 ### Project Structure
-- nuansa-french-tutor/
-  - nuansa-french-tutor/
+- nuansa-french-tutor/ (This is the top-level Git repository folder)
+  - .gitignore 
+  - README.md
+  - requirements.txt
+  - screenshots/ (Contains images for README) 
+  - venv/ (Virtual environment)
+  - nuansa-french-tutor/ (This is the main Python package/source code folder)
     - app/
       - static/
         - audio/ (multiple correction files)
@@ -116,19 +122,15 @@ This example shows text analysis of the sentence "Je suis aller chez mon mère" 
       - uploads/
         - input.wav
       - main.py
-    - screenshots (multiple sample images)
     - src/
       - __init__.py
       - analyze.py 
     - tests/
       - test_language_tool.py 
-    - README.md
-    - requirements.txt
-  - .gitignore
 
 ### Additional Notes
-- The app runs on port 5001 to avoid common port conflicts and ensure faster startup. Access it at http://127.0.0.1:5001 after starting the server. If you encounter issues, check for port conflicts with lsof -i :5001 or run on a different port by modifying app/main.py (e.g., change port=5001 to port=5002 and access http://127.0.0.1:5002).
-- The `app/uploads/` directory is created automatically to store temporary uploaded files and does not need to be versioned.
+- The app runs on port 5001 to avoid common port conflicts and ensure faster startup. Access it at http://127.0.0.1:5001 after starting the server. If you encounter issues, check for port conflicts with lsof -i :5001 or run on a different port by modifying nuansa-french-tutor/app/main.py (e.g., change port=5001 to port=5002 and access http://127.0.0.1:5002).
+- The `nuansa-french-tutor/app/uploads/` directory is created automatically to store temporary uploaded files and does not need to be versioned.
 
 ### License
 - All rights reserved. Contact colenomariah92@gmail.com for licensing inquiries.
