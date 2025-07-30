@@ -18,12 +18,12 @@ Users can also select a specific gender for accurate grammar agreement analysis,
 
 ### Screenshots
 #### Main Interface (Initial State)
-This screenshot displays Nuance's AI-driven French Tutor's main interface in its initial state, providing the core layout for user interaction. It includes the header, example errors, an empty text input field, audio upload options, and gender selection. 
+This screenshot displays Nuansa's AI-driven French Tutor's main interface in its initial state, providing the core layout for user interaction. It includes the header, example errors, an empty text input field, audio upload options, and gender selection. 
 
 ![GUI MainInterfaceInitial](screenshots/main_interface_initial.png)
 
 #### Main Interface (Populated with Input)
-This screenshot displays Nuance's AI-driven French Tutor's main interface with user input, illustrating the app's readiness for analysis.
+This screenshot displays Nuansa's AI-driven French Tutor's main interface with user input, illustrating the app's readiness for analysis.
 
 ![GUI MainInterfacePopulated](screenshots/main_interface_populated.png)
 
@@ -31,7 +31,7 @@ This screenshot displays Nuance's AI-driven French Tutor's main interface with u
 After the user clicks the "Analyser" button, this section displays and dynamically extends the main interface to present the analysis results. It provides comprehensive feedback for both text input and uploaded audio files.
 
 In this section:
-- The "Transcription du texte français : " field shows the original input text (or transcribed audio).
+- The "Transcription du texte français : " field shows the original input text (or transcribed audio after phonetic misspellings have been corrected).
 - For **text input**, the app applies grammar corrections and diacritical mark corrections. It then generates custom audio feedback of the corrected sentence with integrated playback controls.
 - For **audio input**, the app first performs Speech Recognition and Transcription (e.g., converting "Je suis aller à école" from `input.wav` to text). It then applies grammar corrections, diacritical mark corrections, and pronunciation corrections based on the original audio. Finally, it generates custom audio feedback of the corrected sentence with integrated playback controls.
 
