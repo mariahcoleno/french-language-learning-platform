@@ -1,20 +1,15 @@
-## Nuansa's AI-driven French Tutor
-This is the official repository for Nuansa's AI-driven French Tutor, an interactive Python, Flask-based web application meticulously designed to help intermediate French learners achieve fluency.
-
-The application focuses on significantly improving users' grammar, including the proper use of French diacritical marks, and pronunciation. 
-It provides real-time, personalized feedback by analyzing both text input and spoken French audio. 
-This is achieved through a robust combination of language_tool_python combined with custom regex patterns and logic for its rule-based systems.
-
-For a truly dynamic conversational experience, the application seamlessly integrates OpenAI Whisper for highly accurate speech-to-text (STT) transcription, enhanced by custom rules to correct phonetic misspellings (e.g., 'alair' to 'aller'), and gTTS (Google Text-to-Speech) for natural-sounding text-to-speech (TTS) responses. 
-Users can also select a specific gender for accurate grammar agreement analysis, enhancing the personalization of the feedback.
+## Nuansa: The AI-Driven French Tutor
+This is the official repository for Nuansa, a company focused on building tools for language learners. 
+This respository contains our flagship product, an AI-Driven French Tutor, which is a personal AI tutor designed to help intermediate French learners achieve nuanced fluency.
+The web application provides real-time, personalized feedback on both grammar and pronunciation, helping users get unstuck and accelerate their progress.
 
 ### Features
-- Audio file transcription with Whisper for uploaded WAV files
-- Detection of pronunciation and grammar errors, including proper diacritical mark usage (e.g., "a" to "à l'" before "école")
-- Custom audio feedback in French, generated with gTTS
-- Web interface for easy interaction
-- Explainability via an error table in the UI, showing errors, suggested corrections, and error types 
-- Gender-aware grammar corrections (e.g., past participle agreement for masculine or feminine gender)
+- Real-time Personalized Feedback: Provides instant, gender-aware grammar corrections (e.g., past participle agreement) and pronunciation analysis.
+- Rule-Based Grammar Engine: Utilizes a custom system built on language_tool_python and tailored regex patterns for highly specific corrections, including proper diacritical mark usage.
+- Dynamic Audio Integration:
+  - Speech-to-Text (STT): Integrates OpenAI Whisper for accurate transcription of spoken French, with custom rules to correct phonetic misspellings.
+  - Text-to-Speech (TTS): Generates natural-sounding, custom audio feedback in French using gTTS (Google Text-to-Speech).
+- Intuitive User Interface: A simple web interface with an interactive error table that provides explainability for corrections, showing the error, a suggested fix, and the error type.
 
 ### Screenshots
 #### Main Interface (Initial State)
