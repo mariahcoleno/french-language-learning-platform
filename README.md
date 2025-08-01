@@ -1,5 +1,5 @@
 ## Nuansa: The AI-Driven French Tutor
-This is the official repository for Nuansa, a company focused on building tools for language learners. 
+This is the official repository for Nuansa, a company focused on building AI-powered solutions for intermediate language learners. 
 This respository contains our flagship product, an AI-Driven French Tutor, which is a personal AI tutor designed to help intermediate French learners achieve nuanced fluency.
 The web application provides real-time, personalized feedback on both grammar and pronunciation, helping users get unstuck and accelerate their progress.
 
