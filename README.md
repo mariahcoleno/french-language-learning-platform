@@ -71,7 +71,8 @@ This example shows text analysis of the sentence "Je suis aller chez mon mère" 
    - If requirements.txt is missing, install manually: 
      `pip install flask==3.0.3 language-tool-python==2.9.3 torch>=2.4.0 transformers==4.44.2
       gTTS==2.5.3 openai-whisper==20240930 shap==0.46.0 librosa==0.10.2 scikit-learn==1.5.1 numpy==1.26.4 plotly==5.24.0`.
-7. Proceed to "Run the App" below.
+7. Navigate to the application source code folder: `cd nuansa-french-tutor`
+8. Proceed to "Run the App" below.
 
 #### Option 2: Local Setup (Existing Repository)
 1. Navigate to your local repository root (adjust path as needed): `cd ~/Documents/nuansa-french-tutor/`
@@ -83,7 +84,8 @@ This example shows text analysis of the sentence "Je suis aller chez mon mère" 
 3. (Optional) Upgrade tools: pip install `--upgrade pip setuptools wheel` 
 4. Install dependencies (if not already): `pip install -r requirements.txt` 
    - If requirements.txt is missing, use the manual install command above.
-5. Proceed to "Run the App" below.
+5. Navigate to the application source code folder: `cd nuansa-french-tutor`
+6. Proceed to "Run the App" below.
 
 #### Run the App (Both Options):
 1. `python3 -m app.main` 
